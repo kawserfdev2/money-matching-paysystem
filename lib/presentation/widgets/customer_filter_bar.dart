@@ -19,23 +19,25 @@ class CustomerFilterBar extends StatelessWidget {
   Widget build(BuildContext context) {
     final bool isMobile = MediaQuery.of(context).size.width < 900;
 
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: colorScheme.surface,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey.shade200),
+        border: Border.all(color: colorScheme.outlineVariant),
       ),
       child: isMobile
           ? Column(
               children: [
-                _buildSearchField(),
+                _buildSearchField(context),
                 const SizedBox(height: 12),
                 Row(
                   children: [
-                    Expanded(child: _buildCityDropdown()),
+                    Expanded(child: _buildCityDropdown(context)),
                     const SizedBox(width: 12),
-                    Expanded(child: _buildCountryDropdown()),
+                    Expanded(child: _buildCountryDropdown(context)),
                   ],
                 ),
                 const SizedBox(height: 12),
@@ -44,11 +46,11 @@ class CustomerFilterBar extends StatelessWidget {
             )
           : Row(
               children: [
-                Expanded(flex: 3, child: _buildSearchField()),
+                Expanded(flex: 3, child: _buildSearchField(context)),
                 const SizedBox(width: 16),
-                Expanded(flex: 2, child: _buildCityDropdown()),
+                Expanded(flex: 2, child: _buildCityDropdown(context)),
                 const SizedBox(width: 16),
-                Expanded(flex: 2, child: _buildCountryDropdown()),
+                Expanded(flex: 2, child: _buildCountryDropdown(context)),
                 const SizedBox(width: 16),
                 Expanded(flex: 2, child: _buildDatePicker(context)),
               ],
@@ -56,7 +58,7 @@ class CustomerFilterBar extends StatelessWidget {
     );
   }
 
-  Widget _buildSearchField() {
+  Widget _buildSearchField(BuildContext context) {
     return TextField(
       onChanged: onSearch,
       decoration: InputDecoration(
@@ -67,13 +69,13 @@ class CustomerFilterBar extends StatelessWidget {
           borderSide: BorderSide.none,
         ),
         filled: true,
-        fillColor: const Color(0xFFF8FAFC),
+        fillColor: Theme.of(context).colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
         contentPadding: const EdgeInsets.symmetric(horizontal: 16),
       ),
     );
   }
 
-  Widget _buildCityDropdown() {
+  Widget _buildCityDropdown(BuildContext context) {
     return DropdownButtonFormField<String>(
       decoration: InputDecoration(
         hintText: "City",
@@ -82,7 +84,7 @@ class CustomerFilterBar extends StatelessWidget {
           borderSide: BorderSide.none,
         ),
         filled: true,
-        fillColor: const Color(0xFFF8FAFC),
+        fillColor: Theme.of(context).colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
         contentPadding: const EdgeInsets.symmetric(horizontal: 16),
       ),
       items: const [
@@ -95,7 +97,7 @@ class CustomerFilterBar extends StatelessWidget {
     );
   }
 
-  Widget _buildCountryDropdown() {
+  Widget _buildCountryDropdown(BuildContext context) {
     return DropdownButtonFormField<String>(
       decoration: InputDecoration(
         hintText: "Country",
@@ -104,7 +106,7 @@ class CustomerFilterBar extends StatelessWidget {
           borderSide: BorderSide.none,
         ),
         filled: true,
-        fillColor: const Color(0xFFF8FAFC),
+        fillColor: Theme.of(context).colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
         contentPadding: const EdgeInsets.symmetric(horizontal: 16),
       ),
       items: const [
@@ -140,7 +142,7 @@ class CustomerFilterBar extends StatelessWidget {
         style: OutlinedButton.styleFrom(
           padding: const EdgeInsets.symmetric(vertical: 20),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-          side: BorderSide(color: Colors.grey.shade200),
+          side: BorderSide(color: Theme.of(context).colorScheme.outlineVariant),
         ),
       ),
     );

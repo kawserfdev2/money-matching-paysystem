@@ -14,9 +14,9 @@ class RevenueChart extends StatelessWidget {
       height: 400,
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.grey.shade200),
+        border: Border.all(color: Theme.of(context).dividerColor),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -35,7 +35,7 @@ class RevenueChart extends StatelessWidget {
             child: BlocBuilder<ReportBloc, ReportState>(
               builder: (context, state) {
                 if (state is ReportLoaded) {
-                  return LineChart(_mainData(state));
+                  return LineChart(_mainData(context, state));
                 }
                 return const Center(child: CircularProgressIndicator());
               },
@@ -46,7 +46,8 @@ class RevenueChart extends StatelessWidget {
     );
   }
 
-  LineChartData _mainData(ReportLoaded state) {
+  LineChartData _mainData(BuildContext context, ReportLoaded state) {
+    final primaryColor = Theme.of(context).colorScheme.primary;
     List<FlSpot> currentSpots = [];
     List<FlSpot> previousSpots = [];
 
@@ -100,13 +101,13 @@ class RevenueChart extends StatelessWidget {
         LineChartBarData(
           spots: currentSpots,
           isCurved: true,
-          color: Colors.blue,
+          color: primaryColor,
           barWidth: 4,
           isStrokeCapRound: true,
           dotData: const FlDotData(show: false),
           belowBarData: BarAreaData(
             show: true,
-            color: Colors.blue.withOpacity(0.1),
+            color: primaryColor.withValues(alpha: 0.1),
           ),
         ),
         LineChartBarData(

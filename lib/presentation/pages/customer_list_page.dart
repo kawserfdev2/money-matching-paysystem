@@ -18,7 +18,6 @@ class CustomerListPage extends StatelessWidget {
     return BlocProvider(
       create: (context) => getIt<CustomerBloc>()..add(const LoadCustomers()),
       child: Scaffold(
-        backgroundColor: const Color(0xFFF8FAFC),
         body: BlocListener<CustomerBloc, CustomerState>(
           listener: (context, state) {
             if (state is CustomerActionSuccess) {
@@ -60,8 +59,8 @@ class CustomerListPage extends StatelessWidget {
                           icon: const Icon(Icons.add),
                           label: const Text("New Customer"),
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xFF2563EB),
-                            foregroundColor: Colors.white,
+                            backgroundColor: Theme.of(context).colorScheme.primary,
+                            foregroundColor: Theme.of(context).colorScheme.onPrimary,
                             padding: const EdgeInsets.symmetric(
                               horizontal: 20,
                               vertical: 12,
@@ -98,9 +97,9 @@ class CustomerListPage extends StatelessWidget {
                       child: Container(
                         clipBehavior: Clip.antiAlias,
                         decoration: BoxDecoration(
-                          color: Colors.white,
+                          color: Theme.of(context).colorScheme.surface,
                           borderRadius: BorderRadius.circular(12),
-                          border: Border.all(color: Colors.grey.shade200),
+                          border: Border.all(color: Theme.of(context).colorScheme.outlineVariant),
                         ),
                         child: BlocBuilder<CustomerBloc, CustomerState>(
                           builder: (context, state) {
@@ -142,7 +141,9 @@ class CustomerListPage extends StatelessWidget {
       columnSpacing: 12,
       horizontalMargin: 12,
       minWidth: 1000,
-      headingRowColor: MaterialStateProperty.all(const Color(0xFFF8FAFC)),
+      headingRowColor: WidgetStateProperty.all(
+        Theme.of(context).colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
+      ),
       columns: const [
         DataColumn2(label: Text('Customer'), size: ColumnSize.L),
         DataColumn2(label: Text('Company')),
@@ -161,13 +162,13 @@ class CustomerListPage extends StatelessWidget {
                   children: [
                     CircleAvatar(
                       radius: 16,
-                      backgroundColor: Colors.blue.withOpacity(0.1),
+                      backgroundColor: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
                       child: Text(
                         customer.firstName[0].toUpperCase(),
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 12,
                           fontWeight: FontWeight.bold,
-                          color: Colors.blue,
+                          color: Theme.of(context).colorScheme.primary,
                         ),
                       ),
                     ),

@@ -35,34 +35,41 @@ class _PaymentListPageState extends State<PaymentListPage>
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return BlocProvider(
       create: (context) => getIt<PaymentBloc>()..add(const LoadPayments()),
       child: Scaffold(
-        backgroundColor: const Color(0xFFF8FAFC),
         body: Padding(
           padding: const EdgeInsets.all(24.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
+              Text(
                 "Transactions",
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  color: colorScheme.onBackground,
+                ),
               ),
               const SizedBox(height: 24),
 
               // Status Tabs
               Container(
-                decoration: const BoxDecoration(
-                  border: Border(bottom: BorderSide(color: Color(0xFFE2E8F0))),
+                decoration: BoxDecoration(
+                  border: Border(
+                    bottom: BorderSide(color: colorScheme.outlineVariant),
+                  ),
                 ),
                 child: BlocBuilder<PaymentBloc, PaymentState>(
                   builder: (context, state) {
                     return TabBar(
                       controller: _tabController,
                       isScrollable: true,
-                      labelColor: const Color(0xFF2563EB),
-                      unselectedLabelColor: Colors.grey,
-                      indicatorColor: const Color(0xFF2563EB),
+                      labelColor: colorScheme.primary,
+                      unselectedLabelColor: colorScheme.onSurfaceVariant,
+                      indicatorColor: colorScheme.primary,
                       onTap: (index) {
                         context.read<PaymentBloc>().add(
                           FilterByStatus(_tabs[index]),
@@ -101,9 +108,9 @@ class _PaymentListPageState extends State<PaymentListPage>
                 child: Container(
                   clipBehavior: Clip.antiAlias,
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: colorScheme.surface,
                     borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: Colors.grey.shade200),
+                    border: Border.all(color: colorScheme.outlineVariant),
                   ),
                   child: BlocBuilder<PaymentBloc, PaymentState>(
                     builder: (context, state) {

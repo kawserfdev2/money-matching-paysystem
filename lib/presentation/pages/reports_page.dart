@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:fl_chart/fl_chart.dart';
 import 'package:intl/intl.dart';
 import '../../core/injection.dart';
 import '../../logic/report/report_bloc.dart';
@@ -18,7 +17,6 @@ class ReportsPage extends StatelessWidget {
     return BlocProvider(
       create: (context) => getIt<ReportBloc>()..add(FetchReportStats()),
       child: Scaffold(
-        backgroundColor: const Color(0xFFF8FAFC),
         body: BlocConsumer<ReportBloc, ReportState>(
           listener: (context, state) {
             if (state is ReportError) {
@@ -39,11 +37,12 @@ class ReportsPage extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Text(
+                      Text(
                         "Financial Analytics",
                         style: TextStyle(
                           fontSize: 28,
                           fontWeight: FontWeight.bold,
+                          color: Theme.of(context).colorScheme.onBackground,
                         ),
                       ),
                       _buildFilterBar(context, state),
@@ -103,14 +102,21 @@ class ReportsPage extends StatelessWidget {
                 ? "${DateFormat('MMM d').format(start)} - ${DateFormat('MMM d').format(end)}"
                 : "Custom Range",
           ),
+          style: OutlinedButton.styleFrom(
+            side: BorderSide(color: Theme.of(context).colorScheme.outlineVariant),
+          ),
         ),
-        const SizedBox(width: 12),
+       // const SizedBox(width: 12),
         ElevatedButton.icon(
           onPressed: () {
             context.read<ReportBloc>().add(ExportReport(start, end));
           },
           icon: const Icon(Icons.download_outlined),
           label: const Text("Export Report"),
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Theme.of(context).colorScheme.primary,
+            foregroundColor: Theme.of(context).colorScheme.onPrimary,
+          ),
         ),
       ],
     );

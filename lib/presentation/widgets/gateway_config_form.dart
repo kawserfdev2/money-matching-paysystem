@@ -91,88 +91,107 @@ class _GatewayConfigFormState extends State<GatewayConfigForm> {
 
   @override
   Widget build(BuildContext context) {
-    return Form(
-      key: _formKey,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text(
-            "General Information",
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(height: 16),
-          _buildTextField("Display Name", _displayNameController),
-          Row(
-            children: [
-              Expanded(
-                child: _buildTextField(
-                  "Min Amount",
-                  _minAmountController,
-                  isNumber: true,
-                ),
+    return Container(
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.surface,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Theme.of(context).colorScheme.outlineVariant),
+      ),
+      padding: const EdgeInsets.all(24),
+      child: Form(
+        key: _formKey,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              "General Information",
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: Theme.of(context).colorScheme.onSurface,
               ),
-              const SizedBox(width: 16),
-              Expanded(
-                child: _buildTextField(
-                  "Max Amount",
-                  _maxAmountController,
-                  isNumber: true,
-                ),
-              ),
-            ],
-          ),
-          Row(
-            children: [
-              Expanded(
-                child: _buildTextField(
-                  "Fixed Charge",
-                  _fixedChargeController,
-                  isNumber: true,
-                ),
-              ),
-              const SizedBox(width: 16),
-              Expanded(
-                child: _buildTextField(
-                  "Percentage Charge (%)",
-                  _percentChargeController,
-                  isNumber: true,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 32),
-          const Text(
-            "Gateway Configuration",
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(height: 16),
-          ..._configControllers.entries
-              .map((e) => _buildTextField(e.key, e.value))
-              .toList(),
-          const SizedBox(height: 24),
-          const Text(
-            "Display QR Code",
-            style: TextStyle(fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(height: 8),
-          _buildQrPicker(),
-          const SizedBox(height: 40),
-          SizedBox(
-            width: double.infinity,
-            height: 50,
-            child: ElevatedButton(
-              onPressed: _submit,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF2563EB),
-                foregroundColor: Colors.white,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-              ),
-              child: const Text("Save Gateway Configuration"),
             ),
-          ),
-        ],
+            const SizedBox(height: 16),
+            _buildTextField("Display Name", _displayNameController),
+            Row(
+              children: [
+                Expanded(
+                  child: _buildTextField(
+                    "Min Amount",
+                    _minAmountController,
+                    isNumber: true,
+                  ),
+                ),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: _buildTextField(
+                    "Max Amount",
+                    _maxAmountController,
+                    isNumber: true,
+                  ),
+                ),
+              ],
+            ),
+            Row(
+              children: [
+                Expanded(
+                  child: _buildTextField(
+                    "Fixed Charge",
+                    _fixedChargeController,
+                    isNumber: true,
+                  ),
+                ),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: _buildTextField(
+                    "Percentage Charge (%)",
+                    _percentChargeController,
+                    isNumber: true,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 32),
+            Text(
+              "Gateway Configuration",
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: Theme.of(context).colorScheme.onSurface,
+              ),
+            ),
+            const SizedBox(height: 16),
+            ..._configControllers.entries
+                .map((e) => _buildTextField(e.key, e.value))
+                .toList(),
+            const SizedBox(height: 24),
+            Text(
+              "Display QR Code",
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                color: Theme.of(context).colorScheme.onSurface,
+              ),
+            ),
+            const SizedBox(height: 8),
+            _buildQrPicker(),
+            const SizedBox(height: 40),
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: _submit,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Theme.of(context).colorScheme.primary,
+                  foregroundColor: Theme.of(context).colorScheme.onPrimary,
+                  padding: const EdgeInsets.symmetric(vertical: 20),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
+                child: const Text("Save Gateway Configuration"),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -202,6 +221,7 @@ class _GatewayConfigFormState extends State<GatewayConfigForm> {
   }
 
   Widget _buildQrPicker() {
+    final colorScheme = Theme.of(context).colorScheme;
     return InkWell(
       onTap: _pickQrImage,
       child: Container(
@@ -209,7 +229,7 @@ class _GatewayConfigFormState extends State<GatewayConfigForm> {
         width: double.infinity,
         decoration: BoxDecoration(
           border: Border.all(
-            color: Colors.grey.shade300,
+            color: colorScheme.outlineVariant,
             style: BorderStyle.solid,
           ),
           borderRadius: BorderRadius.circular(8),
@@ -217,21 +237,21 @@ class _GatewayConfigFormState extends State<GatewayConfigForm> {
         child: _selectedQrBytes != null
             ? const Center(child: Text("Image Selected"))
             : _currentQrUrl != null
-            ? Image.network(_currentQrUrl!)
-            : const Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    Icons.cloud_upload_outlined,
-                    size: 32,
-                    color: Colors.grey,
+                ? Image.network(_currentQrUrl!)
+                : Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.cloud_upload_outlined,
+                        size: 32,
+                        color: colorScheme.onSurfaceVariant,
+                      ),
+                      Text(
+                        "Click to upload QR Code",
+                        style: TextStyle(color: colorScheme.onSurfaceVariant),
+                      ),
+                    ],
                   ),
-                  Text(
-                    "Click to upload QR Code",
-                    style: TextStyle(color: Colors.grey),
-                  ),
-                ],
-              ),
       ),
     );
   }

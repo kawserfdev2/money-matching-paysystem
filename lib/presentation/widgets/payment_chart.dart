@@ -8,14 +8,17 @@ class PaymentChart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final primaryColor = colorScheme.primary;
+
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: colorScheme.surface,
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.04),
+            color: Colors.black.withValues(alpha: 0.04),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -24,12 +27,12 @@ class PaymentChart extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
+          Text(
             "Payment Statistics",
             style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,
-              color: Color(0xFF1E293B),
+              color: colorScheme.onSurface,
             ),
           ),
           const SizedBox(height: 32),
@@ -41,7 +44,7 @@ class PaymentChart extends StatelessWidget {
                   show: true,
                   drawVerticalLine: false,
                   getDrawingHorizontalLine: (value) => FlLine(
-                    color: Colors.grey.withOpacity(0.1),
+                    color: colorScheme.outlineVariant.withValues(alpha: 0.1),
                     strokeWidth: 1,
                   ),
                 ),
@@ -71,8 +74,8 @@ class PaymentChart extends StatelessWidget {
                         if (value >= 0 && value < 7) {
                           return Text(
                             days[value.toInt()],
-                            style: const TextStyle(
-                              color: Colors.grey,
+                            style: TextStyle(
+                              color: colorScheme.onSurfaceVariant,
                               fontSize: 12,
                             ),
                           );
@@ -89,13 +92,13 @@ class PaymentChart extends StatelessWidget {
                       return FlSpot(e.key.toDouble(), e.value);
                     }).toList(),
                     isCurved: true,
-                    color: const Color(0xFF2563EB),
+                    color: primaryColor,
                     barWidth: 3,
                     isStrokeCapRound: true,
                     dotData: const FlDotData(show: false),
                     belowBarData: BarAreaData(
                       show: true,
-                      color: const Color(0xFF2563EB).withOpacity(0.1),
+                      color: primaryColor.withValues(alpha: 0.1),
                     ),
                   ),
                 ],

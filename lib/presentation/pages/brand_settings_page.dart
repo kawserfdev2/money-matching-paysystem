@@ -36,20 +36,22 @@ class _BrandSettingsPageState extends State<BrandSettingsPage>
     return BlocProvider(
       create: (context) => getIt<SettingsBloc>()..add(LoadSettings()),
       child: Scaffold(
-        backgroundColor: Colors.grey[50],
         appBar: AppBar(
-          backgroundColor: Colors.white,
+          backgroundColor: Theme.of(context).colorScheme.surface,
           elevation: 0,
-          title: const Text(
+          title: Text(
             "Settings",
-            style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+            style: TextStyle(
+              color: Theme.of(context).colorScheme.onSurface,
+              fontWeight: FontWeight.bold,
+            ),
           ),
           bottom: TabBar(
             controller: _tabController,
             isScrollable: true,
-            labelColor: Colors.blue,
-            unselectedLabelColor: Colors.grey,
-            indicatorColor: Colors.blue,
+            labelColor: Theme.of(context).colorScheme.primary,
+            unselectedLabelColor: Theme.of(context).colorScheme.onSurfaceVariant,
+            indicatorColor: Theme.of(context).colorScheme.primary,
             tabs: const [
               Tab(text: "General"),
               Tab(text: "Branding"),
@@ -131,6 +133,10 @@ class _BrandSettingsPageState extends State<BrandSettingsPage>
               height: 45,
               child: ElevatedButton(
                 onPressed: () => _handleUpdate(context, brand),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Theme.of(context).colorScheme.primary,
+                  foregroundColor: Theme.of(context).colorScheme.onPrimary,
+                ),
                 child: const Text("Save Changes"),
               ),
             ),

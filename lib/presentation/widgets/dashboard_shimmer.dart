@@ -59,6 +59,7 @@ class _ShimmerBoxState extends State<_ShimmerBox>
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     return AnimatedBuilder(
       animation: _controller,
       builder: (context, child) {
@@ -66,8 +67,8 @@ class _ShimmerBoxState extends State<_ShimmerBox>
           height: widget.height,
           decoration: BoxDecoration(
             color: Color.lerp(
-              Colors.grey.shade200,
-              Colors.grey.shade100,
+              colorScheme.surfaceContainer,
+              colorScheme.surfaceContainerHighest,
               _controller.value,
             ),
             borderRadius: BorderRadius.circular(12),

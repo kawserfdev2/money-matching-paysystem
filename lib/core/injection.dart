@@ -42,6 +42,7 @@ import 'package:amarpay/logic/developer/developer_bloc.dart';
 import 'package:amarpay/logic/automation/automation_bloc.dart';
 import 'package:amarpay/logic/settings/settings_bloc.dart';
 import 'package:amarpay/logic/activity/activity_bloc.dart';
+import 'package:amarpay/logic/theme/theme_bloc.dart';
 
 import 'router/app_router.dart';
 
@@ -105,6 +106,7 @@ void setupInjection() {
         SettingsBloc(getIt<SettingsRepository>(), getIt<ActivityRepository>()),
   );
   getIt.registerFactory(() => ActivityBloc(getIt<ActivityRepository>()));
+  getIt.registerLazySingleton(() => ThemeBloc());
 
   // Router
   getIt.registerLazySingleton(() => AppRouter(getIt<AuthBloc>()));

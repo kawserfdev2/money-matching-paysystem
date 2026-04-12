@@ -8,10 +8,10 @@ class CustomerInsightsDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     return Container(
       width: MediaQuery.of(context).size.width * 0.4,
-      // minWidth: 400,
-      color: Colors.white,
+      color: colorScheme.surface,
       child: Column(
         children: [
           _buildHeader(context),
@@ -21,37 +21,47 @@ class CustomerInsightsDrawer extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _buildProfileCard(),
+                  _buildProfileCard(context),
                   const SizedBox(height: 24),
-                  _buildStatsRow(),
+                  _buildStatsRow(context),
                   const SizedBox(height: 32),
-                  const Text(
+                  Text(
                     "Contact Information",
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: colorScheme.onSurface,
+                    ),
                   ),
                   const SizedBox(height: 16),
-                  _buildInfoTile(Icons.email_outlined, "Email", customer.email),
-                  _buildInfoTile(Icons.phone_outlined, "Phone", customer.phone),
+                  _buildInfoTile(context, Icons.email_outlined, "Email", customer.email),
+                  _buildInfoTile(context, Icons.phone_outlined, "Phone", customer.phone),
                   _buildInfoTile(
+                    context,
                     Icons.business_outlined,
                     "Company",
                     customer.company ?? "N/A",
                   ),
                   _buildInfoTile(
+                    context,
                     Icons.location_on_outlined,
                     "Location",
                     "${customer.city ?? ""}, ${customer.country ?? ""}",
                   ),
                   const SizedBox(height: 32),
-                  const Text(
+                  Text(
                     "Payment History",
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: colorScheme.onSurface,
+                    ),
                   ),
                   const SizedBox(height: 16),
-                  const Center(
+                  Center(
                     child: Text(
                       "Payment history loading...",
-                      style: TextStyle(color: Colors.grey),
+                      style: TextStyle(color: colorScheme.onSurfaceVariant),
                     ),
                   ),
                 ],
@@ -64,18 +74,23 @@ class CustomerInsightsDrawer extends StatelessWidget {
   }
 
   Widget _buildHeader(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        color: Colors.white,
-        border: Border(bottom: BorderSide(color: Colors.grey.shade200)),
+        color: colorScheme.surface,
+        border: Border(bottom: BorderSide(color: colorScheme.outlineVariant)),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          const Text(
+          Text(
             "Customer Insights",
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              color: colorScheme.onSurface,
+            ),
           ),
           IconButton(
             icon: const Icon(Icons.close),
@@ -86,18 +101,19 @@ class CustomerInsightsDrawer extends StatelessWidget {
     );
   }
 
-  Widget _buildProfileCard() {
+  Widget _buildProfileCard(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     return Row(
       children: [
         CircleAvatar(
           radius: 40,
-          backgroundColor: Colors.blue.withOpacity(0.1),
+          backgroundColor: colorScheme.primary.withValues(alpha: 0.1),
           child: Text(
             customer.firstName[0].toUpperCase(),
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 32,
               fontWeight: FontWeight.bold,
-              color: Colors.blue,
+              color: colorScheme.primary,
             ),
           ),
         ),
@@ -108,14 +124,15 @@ class CustomerInsightsDrawer extends StatelessWidget {
             children: [
               Text(
                 customer.fullName,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
+                  color: colorScheme.onSurface,
                 ),
               ),
               Text(
                 "Joined on ${customer.createdAt.toString().split(' ')[0]}",
-                style: const TextStyle(color: Colors.grey),
+                style: TextStyle(color: colorScheme.onSurfaceVariant),
               ),
               const SizedBox(height: 8),
               Container(
@@ -124,7 +141,7 @@ class CustomerInsightsDrawer extends StatelessWidget {
                   vertical: 4,
                 ),
                 decoration: BoxDecoration(
-                  color: Colors.green.withOpacity(0.1),
+                  color: Colors.green.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: Text(
@@ -143,19 +160,21 @@ class CustomerInsightsDrawer extends StatelessWidget {
     );
   }
 
-  Widget _buildStatsRow() {
+  Widget _buildStatsRow(BuildContext context) {
     return Row(
       children: [
         Expanded(
           child: _buildStatCard(
+            context,
             "Total Spent",
             "৳${customer.totalSpent.toStringAsFixed(2)}",
-            Colors.blue,
+            Theme.of(context).colorScheme.primary,
           ),
         ),
         const SizedBox(width: 12),
         Expanded(
           child: _buildStatCard(
+            context,
             "Payments",
             customer.totalPayments.toString(),
             Colors.purple,
@@ -164,6 +183,7 @@ class CustomerInsightsDrawer extends StatelessWidget {
         const SizedBox(width: 12),
         Expanded(
           child: _buildStatCard(
+            context,
             "Success Rate",
             "${customer.successRate.toStringAsFixed(1)}%",
             Colors.green,
@@ -173,13 +193,13 @@ class CustomerInsightsDrawer extends StatelessWidget {
     );
   }
 
-  Widget _buildStatCard(String title, String value, Color color) {
+  Widget _buildStatCard(BuildContext context, String title, String value, Color color) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.05),
+        color: color.withValues(alpha: 0.05),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: color.withOpacity(0.1)),
+        border: Border.all(color: color.withValues(alpha: 0.1)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -195,36 +215,43 @@ class CustomerInsightsDrawer extends StatelessWidget {
           const SizedBox(height: 4),
           Text(
             value,
-            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: Theme.of(context).colorScheme.onSurface,
+            ),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildInfoTile(IconData icon, String label, String value) {
+  Widget _buildInfoTile(BuildContext context, IconData icon, String label, String value) {
+    final colorScheme = Theme.of(context).colorScheme;
     return Padding(
       padding: const EdgeInsets.only(bottom: 16.0),
       child: Row(
         children: [
-          Icon(icon, size: 20, color: Colors.grey),
+          Icon(icon, size: 20, color: colorScheme.onSurfaceVariant),
           const SizedBox(width: 12),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
                 label,
-                style: const TextStyle(color: Colors.grey, fontSize: 12),
+                style: TextStyle(color: colorScheme.onSurfaceVariant, fontSize: 12),
               ),
-              Text(value, style: const TextStyle(fontWeight: FontWeight.w500)),
+              Text(
+                value,
+                style: TextStyle(
+                  fontWeight: FontWeight.w500,
+                  color: colorScheme.onSurface,
+                ),
+              ),
             ],
           ),
         ],
       ),
     );
   }
-}
-
-extension on Widget {
-  Widget get minWidth => this; // Placeholder for width logic if needed
 }

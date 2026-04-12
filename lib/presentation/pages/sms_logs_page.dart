@@ -15,13 +15,15 @@ class SmsLogsPage extends StatelessWidget {
     return BlocProvider(
       create: (context) => getIt<AutomationBloc>()..add(WatchSmsLogs()),
       child: Scaffold(
-        backgroundColor: Colors.grey[50],
         appBar: AppBar(
-          title: const Text(
+          title: Text(
             "MFS Automation",
-            style: TextStyle(color: Colors.black),
+            style: TextStyle(
+              color: Theme.of(context).colorScheme.onSurface,
+              fontWeight: FontWeight.bold,
+            ),
           ),
-          backgroundColor: Colors.white,
+          backgroundColor: Theme.of(context).colorScheme.surface,
           elevation: 0,
           actions: [
             TextButton.icon(
@@ -33,7 +35,7 @@ class SmsLogsPage extends StatelessWidget {
         ),
         body: Column(
           children: [
-            _buildConnectedDevices(),
+            _buildConnectedDevices(context),
             Expanded(child: _buildLogsList()),
           ],
         ),
@@ -41,50 +43,68 @@ class SmsLogsPage extends StatelessWidget {
     );
   }
 
-  Widget _buildConnectedDevices() {
+  Widget _buildConnectedDevices(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     return Container(
       padding: const EdgeInsets.all(24),
       margin: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: colorScheme.surface,
         borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: colorScheme.outlineVariant),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Row(
+          Row(
             children: [
-              Icon(Icons.phone_android, color: Colors.green),
-              SizedBox(width: 8),
+              Icon(Icons.phone_android, color: colorScheme.primary),
+              const SizedBox(width: 8),
               Text(
                 "Connected Devices",
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: colorScheme.onSurface,
+                ),
               ),
             ],
           ),
           const SizedBox(height: 16),
-          _buildDeviceItem("Redmi Note 12", "Online", "Active now"),
+          _buildDeviceItem(context, "Redmi Note 12", "Online", "Active now"),
         ],
       ),
     );
   }
 
-  Widget _buildDeviceItem(String name, String status, String lastSeen) {
+  Widget _buildDeviceItem(
+    BuildContext context,
+    String name,
+    String status,
+    String lastSeen,
+  ) {
+    final colorScheme = Theme.of(context).colorScheme;
     return Row(
       children: [
         CircleAvatar(
-          backgroundColor: Colors.green.withOpacity(0.1),
-          child: const Icon(Icons.smartphone, color: Colors.green, size: 20),
+          backgroundColor: colorScheme.primary.withValues(alpha: 0.1),
+          child: Icon(Icons.smartphone, color: colorScheme.primary, size: 20),
         ),
         const SizedBox(width: 12),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(name, style: const TextStyle(fontWeight: FontWeight.bold)),
+              Text(
+                name,
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: colorScheme.onSurface,
+                ),
+              ),
               Text(
                 lastSeen,
-                style: const TextStyle(fontSize: 12, color: Colors.grey),
+                style: TextStyle(fontSize: 12, color: colorScheme.onSurfaceVariant),
               ),
             ],
           ),
@@ -92,7 +112,7 @@ class SmsLogsPage extends StatelessWidget {
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
           decoration: BoxDecoration(
-            color: Colors.green.withOpacity(0.1),
+            color: Colors.green.withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(12),
           ),
           child: Text(
@@ -116,7 +136,7 @@ class SmsLogsPage extends StatelessWidget {
             padding: const EdgeInsets.all(24),
             itemCount: state.logs.length,
             separatorBuilder: (_, __) => const SizedBox(height: 12),
-            itemBuilder: (context, index) => _buildLogCard(state.logs[index]),
+            itemBuilder: (context, index) => _buildLogCard(context, state.logs[index]),
           );
         }
         return const Center(child: CircularProgressIndicator());
@@ -124,24 +144,26 @@ class SmsLogsPage extends StatelessWidget {
     );
   }
 
-  Widget _buildLogCard(SmsLogEntity log) {
+  Widget _buildLogCard(BuildContext context, SmsLogEntity log) {
+    final colorScheme = Theme.of(context).colorScheme;
     final isMatched = log.status == 'matched';
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: colorScheme.surface,
         borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: colorScheme.outlineVariant),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           CircleAvatar(
             backgroundColor: isMatched
-                ? Colors.blue.withOpacity(0.1)
-                : Colors.amber.withOpacity(0.1),
+                ? colorScheme.primary.withValues(alpha: 0.1)
+                : colorScheme.secondary.withValues(alpha: 0.1),
             child: Icon(
               isMatched ? Icons.check_circle : Icons.warning,
-              color: isMatched ? Colors.blue : Colors.amber,
+              color: isMatched ? colorScheme.primary : colorScheme.secondary,
               size: 20,
             ),
           ),
@@ -155,18 +177,21 @@ class SmsLogsPage extends StatelessWidget {
                   children: [
                     Text(
                       log.sender,
-                      style: const TextStyle(fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: colorScheme.onSurface,
+                      ),
                     ),
                     Text(
                       DateFormat('hh:mm a').format(log.createdAt),
-                      style: const TextStyle(fontSize: 12, color: Colors.grey),
+                      style: TextStyle(fontSize: 12, color: colorScheme.onSurfaceVariant),
                     ),
                   ],
                 ),
                 const SizedBox(height: 4),
                 Text(
                   log.body,
-                  style: const TextStyle(fontSize: 13, color: Colors.black87),
+                  style: TextStyle(fontSize: 13, color: colorScheme.onSurface),
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -186,9 +211,10 @@ class SmsLogsPage extends StatelessWidget {
                     if (log.trxId != null) ...[
                       Text(
                         "TrxID: ${log.trxId}",
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontFamily: 'monospace',
                           fontSize: 12,
+                          color: colorScheme.onSurfaceVariant,
                         ),
                       ),
                     ],
@@ -202,14 +228,14 @@ class SmsLogsPage extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
             decoration: BoxDecoration(
               color: isMatched
-                  ? Colors.green.withOpacity(0.1)
-                  : Colors.grey.withOpacity(0.1),
+                  ? Colors.green.withValues(alpha: 0.1)
+                  : colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
               borderRadius: BorderRadius.circular(8),
             ),
             child: Text(
               log.status.toUpperCase(),
               style: TextStyle(
-                color: isMatched ? Colors.green : Colors.grey,
+                color: isMatched ? Colors.green : colorScheme.onSurfaceVariant,
                 fontSize: 10,
                 fontWeight: FontWeight.bold,
               ),

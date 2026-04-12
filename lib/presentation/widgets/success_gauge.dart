@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../logic/report/report_bloc.dart';
 import '../../logic/report/report_state.dart';
-import 'dart:math' as math;
 
 class SuccessGauge extends StatelessWidget {
   const SuccessGauge({super.key});
@@ -13,40 +12,48 @@ class SuccessGauge extends StatelessWidget {
       height: 400,
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.grey.shade200),
+        border: Border.all(color: Theme.of(context).colorScheme.outlineVariant),
       ),
       child: Column(
         children: [
-          const Align(
+          Align(
             alignment: Alignment.centerLeft,
             child: Text(
               "Payment Success Rate",
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: Theme.of(context).colorScheme.onSurface,
+              ),
             ),
           ),
           const Spacer(),
           BlocBuilder<ReportBloc, ReportState>(
             builder: (context, state) {
               if (state is ReportLoaded) {
-                return _buildGauge(state.stats.successRate);
+                return _buildGauge(context, state.stats.successRate);
               }
               return const CircularProgressIndicator();
             },
           ),
           const Spacer(),
-          const Text(
+          Text(
             "Successful vs Failed attempts across all gateways",
             textAlign: TextAlign.center,
-            style: TextStyle(color: Colors.grey, fontSize: 13),
+            style: TextStyle(
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
+              fontSize: 13,
+            ),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildGauge(double percentage) {
+  Widget _buildGauge(BuildContext context, double percentage) {
+    final colorScheme = Theme.of(context).colorScheme;
     return Stack(
       alignment: Alignment.center,
       children: [
@@ -56,8 +63,8 @@ class SuccessGauge extends StatelessWidget {
           child: CircularProgressIndicator(
             value: percentage / 100,
             strokeWidth: 20,
-            backgroundColor: Colors.grey[100],
-            color: Colors.blue,
+            backgroundColor: colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
+            color: colorScheme.primary,
             strokeCap: StrokeCap.round,
           ),
         ),
@@ -65,11 +72,18 @@ class SuccessGauge extends StatelessWidget {
           children: [
             Text(
               "${percentage.toStringAsFixed(1)}%",
-              style: const TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
+              style: TextStyle(
+                fontSize: 32,
+                fontWeight: FontWeight.bold,
+                color: colorScheme.onSurface,
+              ),
             ),
-            const Text(
+            Text(
               "Success",
-              style: TextStyle(color: Colors.blue, fontWeight: FontWeight.w500),
+              style: TextStyle(
+                color: colorScheme.primary,
+                fontWeight: FontWeight.w500,
+              ),
             ),
           ],
         ),

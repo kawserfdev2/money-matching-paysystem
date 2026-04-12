@@ -22,14 +22,13 @@ class _DeveloperSettingsPageState extends State<DeveloperSettingsPage> {
       create: (context) =>
           getIt<DeveloperBloc>()..add(const InitializeDeveloperTools()),
       child: Scaffold(
-        backgroundColor: Colors.white,
         body: BlocConsumer<DeveloperBloc, DeveloperState>(
           listener: (context, state) {
             if (state is DeveloperError) {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                   content: Text(state.message),
-                  backgroundColor: Colors.red,
+                  backgroundColor: Theme.of(context).colorScheme.error,
                 ),
               );
             }
@@ -55,9 +54,9 @@ class _DeveloperSettingsPageState extends State<DeveloperSettingsPage> {
                       ),
                     ),
                     const SizedBox(height: 8),
-                    const Text(
+                    Text(
                       "Manage your API keys and configure your checkout environment.",
-                      style: TextStyle(color: Colors.grey),
+                      style: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant),
                     ),
                     const SizedBox(height: 32),
 
@@ -93,11 +92,11 @@ class _DeveloperSettingsPageState extends State<DeveloperSettingsPage> {
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
         color: isSandbox
-            ? Colors.amber.withOpacity(0.05)
-            : Colors.green.withOpacity(0.05),
+            ? Theme.of(context).colorScheme.tertiaryContainer.withOpacity(0.3)
+            : Theme.of(context).colorScheme.primaryContainer.withOpacity(0.3),
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: isSandbox ? Colors.amber.shade200 : Colors.green.shade200,
+          color: isSandbox ? Theme.of(context).colorScheme.tertiary : Theme.of(context).colorScheme.primary,
         ),
       ),
       child: Row(
@@ -112,8 +111,8 @@ class _DeveloperSettingsPageState extends State<DeveloperSettingsPage> {
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
                     color: isSandbox
-                        ? Colors.amber.shade900
-                        : Colors.green.shade900,
+                        ? Theme.of(context).colorScheme.onTertiaryContainer
+                        : Theme.of(context).colorScheme.onPrimaryContainer,
                   ),
                 ),
                 const SizedBox(height: 4),
@@ -126,7 +125,6 @@ class _DeveloperSettingsPageState extends State<DeveloperSettingsPage> {
           ),
           Switch(
             value: isSandbox,
-            activeColor: Colors.amber.shade900,
             onChanged: (val) {
               context.read<DeveloperBloc>().add(
                 ToggleSandboxMode(brandId, val),
@@ -147,7 +145,7 @@ class _DeveloperSettingsPageState extends State<DeveloperSettingsPage> {
       return Center(
         child: Column(
           children: [
-            const Icon(Icons.vpn_key_outlined, size: 64, color: Colors.grey),
+            Icon(Icons.vpn_key_outlined, size: 64, color: Theme.of(context).colorScheme.outline),
             const SizedBox(height: 16),
             const Text("No API keys generated yet."),
             const SizedBox(height: 24),
@@ -193,9 +191,9 @@ class _DeveloperSettingsPageState extends State<DeveloperSettingsPage> {
       children: [
         Text(
           label,
-          style: const TextStyle(
+          style: TextStyle(
             fontSize: 13,
-            color: Colors.grey,
+            color: Theme.of(context).colorScheme.onSurfaceVariant,
             fontWeight: FontWeight.w500,
           ),
         ),
@@ -203,9 +201,9 @@ class _DeveloperSettingsPageState extends State<DeveloperSettingsPage> {
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           decoration: BoxDecoration(
-            color: Colors.grey.shade50,
-            borderRadius: BorderRadius.circular(8),
-            border: Border.all(color: Colors.grey.shade200),
+            color: Theme.of(context).colorScheme.surfaceContainerHighest.withOpacity(0.3),
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: Theme.of(context).colorScheme.outlineVariant),
           ),
           child: Row(
             children: [

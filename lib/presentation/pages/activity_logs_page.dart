@@ -15,13 +15,15 @@ class ActivityLogsPage extends StatelessWidget {
     return BlocProvider(
       create: (context) => getIt<ActivityBloc>()..add(WatchActivityLogs()),
       child: Scaffold(
-        backgroundColor: Colors.grey[50],
         appBar: AppBar(
-          title: const Text(
+          title: Text(
             "Audit Trail",
-            style: TextStyle(color: Colors.black),
+            style: TextStyle(
+              color: Theme.of(context).colorScheme.onSurface,
+              fontWeight: FontWeight.bold,
+            ),
           ),
-          backgroundColor: Colors.white,
+          backgroundColor: Theme.of(context).colorScheme.surface,
           elevation: 0,
         ),
         body: BlocBuilder<ActivityBloc, ActivityState>(
@@ -52,7 +54,7 @@ class ActivityLogsPage extends StatelessWidget {
                 itemCount: state.activities.length,
                 separatorBuilder: (_, __) => const SizedBox(height: 1),
                 itemBuilder: (context, index) =>
-                    _buildActivityItem(state.activities[index]),
+                    _buildActivityItem(context, state.activities[index]),
               );
             }
 
@@ -102,17 +104,18 @@ class ActivityLogsPage extends StatelessWidget {
     );
   }
 
-  Widget _buildActivityItem(ActivityEntity activity) {
+  Widget _buildActivityItem(BuildContext context, ActivityEntity activity) {
+    final colorScheme = Theme.of(context).colorScheme;
     return Container(
-      color: Colors.white,
+      color: colorScheme.surface,
       padding: const EdgeInsets.all(16),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           CircleAvatar(
             radius: 18,
-            backgroundColor: Colors.blue.withOpacity(0.1),
-            child: const Icon(Icons.history, color: Colors.blue, size: 18),
+            backgroundColor: colorScheme.primary.withValues(alpha: 0.1),
+            child: Icon(Icons.history, color: colorScheme.primary, size: 18),
           ),
           const SizedBox(width: 16),
           Expanded(
@@ -121,7 +124,7 @@ class ActivityLogsPage extends StatelessWidget {
               children: [
                 RichText(
                   text: TextSpan(
-                    style: const TextStyle(color: Colors.black87, fontSize: 14),
+                    style: TextStyle(color: colorScheme.onSurface, fontSize: 14),
                     children: [
                       TextSpan(
                         text: activity.userName ?? 'System',
@@ -131,9 +134,9 @@ class ActivityLogsPage extends StatelessWidget {
                       if (activity.resource != null)
                         TextSpan(
                           text: activity.resource!,
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontWeight: FontWeight.bold,
-                            color: Colors.blue,
+                            color: colorScheme.primary,
                           ),
                         ),
                     ],
@@ -146,14 +149,14 @@ class ActivityLogsPage extends StatelessWidget {
                       DateFormat(
                         'MMM dd, yyyy • hh:mm a',
                       ).format(activity.createdAt),
-                      style: const TextStyle(fontSize: 12, color: Colors.grey),
+                      style: TextStyle(fontSize: 12, color: colorScheme.onSurfaceVariant),
                     ),
                     const SizedBox(width: 8),
-                    const Text("•", style: TextStyle(color: Colors.grey)),
+                    Text("•", style: TextStyle(color: colorScheme.onSurfaceVariant)),
                     const SizedBox(width: 8),
                     Text(
                       activity.ipAddress ?? 'N/A',
-                      style: const TextStyle(fontSize: 12, color: Colors.grey),
+                      style: TextStyle(fontSize: 12, color: colorScheme.onSurfaceVariant),
                     ),
                   ],
                 ),

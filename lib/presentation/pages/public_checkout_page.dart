@@ -21,11 +21,12 @@ class _PublicCheckoutPageState extends State<PublicCheckoutPage> {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     return BlocProvider(
       create: (context) =>
           getIt<CheckoutBloc>()..add(LoadCheckoutDetails(widget.slug)),
       child: Scaffold(
-        backgroundColor: Colors.grey[50],
+        backgroundColor: colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
         body: BlocConsumer<CheckoutBloc, CheckoutState>(
           listener: (context, state) {
             if (state is CheckoutSuccess) {
@@ -44,7 +45,7 @@ class _PublicCheckoutPageState extends State<PublicCheckoutPage> {
               return Center(
                 child: Text(
                   state.reason,
-                  style: const TextStyle(fontSize: 18, color: Colors.red),
+                  style: TextStyle(fontSize: 18, color: colorScheme.error),
                 ),
               );
             }
@@ -53,110 +54,125 @@ class _PublicCheckoutPageState extends State<PublicCheckoutPage> {
               final isSandbox = link.isSandbox;
 
               return Center(
-                child: Container(
-                  constraints: const BoxConstraints(maxWidth: 500),
-                  margin: const EdgeInsets.all(24),
-                  padding: const EdgeInsets.all(32),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(16),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.05),
-                        blurRadius: 20,
-                      ),
-                    ],
-                  ),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      if (isSandbox) _buildSandboxBanner(),
-                      const SizedBox(height: 24),
-                      const Icon(
-                        Icons.lock_outline,
-                        size: 48,
-                        color: Colors.blue,
-                      ),
-                      const SizedBox(height: 16),
-                      Text(
-                        link.productName,
-                        style: const TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
+                child: SingleChildScrollView(
+                  child: Container(
+                    constraints: const BoxConstraints(maxWidth: 500),
+                    margin: const EdgeInsets.all(24),
+                    padding: const EdgeInsets.all(32),
+                    decoration: BoxDecoration(
+                      color: colorScheme.surface,
+                      borderRadius: BorderRadius.circular(16),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withValues(alpha: 0.05),
+                          blurRadius: 20,
                         ),
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        "${link.amount} ${link.currency}",
-                        style: const TextStyle(
-                          fontSize: 32,
-                          fontWeight: FontWeight.w900,
-                          color: Colors.blue,
-                        ),
-                      ),
-                      const SizedBox(height: 32),
-                      _buildTextField(
-                        "Full Name",
-                        _nameController,
-                        Icons.person_outline,
-                      ),
-                      const SizedBox(height: 16),
-                      _buildTextField(
-                        "Email Address",
-                        _emailController,
-                        Icons.mail_outline,
-                      ),
-                      const SizedBox(height: 16),
-                      _buildTextField(
-                        "Phone Number",
-                        _phoneController,
-                        Icons.phone_android,
-                      ),
-                      const SizedBox(height: 32),
-                      if (isSandbox) ...[
-                        const Text(
-                          "Sandbox Mode: Enter 'SANDBOX-123' to simulate",
-                          style: TextStyle(color: Colors.grey, fontSize: 12),
-                        ),
-                        const SizedBox(height: 8),
-                        _buildTextField(
-                          "Test TrxID",
-                          _trxController,
-                          Icons.security,
-                          hint: "SANDBOX-123",
-                        ),
-                        const SizedBox(height: 24),
                       ],
-                      SizedBox(
-                        width: double.infinity,
-                        height: 50,
-                        child: ElevatedButton(
-                          onPressed: () {
-                            if (isSandbox &&
-                                _trxController.text != "SANDBOX-123") {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text("Invalid Testing TrxID"),
-                                ),
-                              );
-                              return;
-                            }
-                            context.read<CheckoutBloc>().add(
-                              InitiateCheckoutPayment(
-                                customerEmail: _emailController.text,
-                                customerName: _nameController.text,
-                                customerPhone: _phoneController.text,
-                              ),
-                            );
-                          },
-                          child: Text(
-                            state is CheckoutProcessing
-                                ? "Processing..."
-                                : "Pay Now",
+                      border: Border.all(color: colorScheme.outlineVariant),
+                    ),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        if (isSandbox) _buildSandboxBanner(context),
+                        const SizedBox(height: 24),
+                        Icon(
+                          Icons.lock_outline,
+                          size: 48,
+                          color: colorScheme.primary,
+                        ),
+                        const SizedBox(height: 16),
+                        Text(
+                          link.productName,
+                          style: TextStyle(
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                            color: colorScheme.onSurface,
                           ),
                         ),
-                      ),
-                    ],
+                        const SizedBox(height: 8),
+                        Text(
+                          "${link.amount} ${link.currency}",
+                          style: TextStyle(
+                            fontSize: 32,
+                            fontWeight: FontWeight.w900,
+                            color: colorScheme.primary,
+                          ),
+                        ),
+                        const SizedBox(height: 32),
+                        _buildTextField(
+                          context,
+                          "Full Name",
+                          _nameController,
+                          Icons.person_outline,
+                        ),
+                        const SizedBox(height: 16),
+                        _buildTextField(
+                          context,
+                          "Email Address",
+                          _emailController,
+                          Icons.mail_outline,
+                        ),
+                        const SizedBox(height: 16),
+                        _buildTextField(
+                          context,
+                          "Phone Number",
+                          _phoneController,
+                          Icons.phone_android,
+                        ),
+                        const SizedBox(height: 32),
+                        if (isSandbox) ...[
+                          Text(
+                            "Sandbox Mode: Enter 'SANDBOX-123' to simulate",
+                            style: TextStyle(
+                              color: colorScheme.onSurfaceVariant,
+                              fontSize: 12,
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          _buildTextField(
+                            context,
+                            "Test TrxID",
+                            _trxController,
+                            Icons.security,
+                            hint: "SANDBOX-123",
+                          ),
+                          const SizedBox(height: 24),
+                        ],
+                        SizedBox(
+                          width: double.infinity,
+                          height: 50,
+                          child: ElevatedButton(
+                            onPressed: () {
+                              if (isSandbox &&
+                                  _trxController.text != "SANDBOX-123") {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text("Invalid Testing TrxID"),
+                                  ),
+                                );
+                                return;
+                              }
+                              context.read<CheckoutBloc>().add(
+                                InitiateCheckoutPayment(
+                                  customerEmail: _emailController.text,
+                                  customerName: _nameController.text,
+                                  customerPhone: _phoneController.text,
+                                ),
+                              );
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: colorScheme.primary,
+                              foregroundColor: colorScheme.onPrimary,
+                            ),
+                            child: Text(
+                              state is CheckoutProcessing
+                                  ? "Processing..."
+                                  : "Pay Now",
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               );
@@ -168,13 +184,14 @@ class _PublicCheckoutPageState extends State<PublicCheckoutPage> {
     );
   }
 
-  Widget _buildSandboxBanner() {
+  Widget _buildSandboxBanner(BuildContext context) {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.symmetric(vertical: 8),
       decoration: BoxDecoration(
-        color: Colors.amber[100],
+        color: Colors.amber.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: Colors.amber.withValues(alpha: 0.2)),
       ),
       child: const Row(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -195,6 +212,7 @@ class _PublicCheckoutPageState extends State<PublicCheckoutPage> {
   }
 
   Widget _buildTextField(
+    BuildContext context,
     String label,
     TextEditingController controller,
     IconData icon, {
@@ -232,6 +250,10 @@ class _PublicCheckoutPageState extends State<PublicCheckoutPage> {
           Center(
             child: ElevatedButton(
               onPressed: () => Navigator.pop(context),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Theme.of(context).colorScheme.primary,
+                foregroundColor: Theme.of(context).colorScheme.onPrimary,
+              ),
               child: const Text("Done"),
             ),
           ),

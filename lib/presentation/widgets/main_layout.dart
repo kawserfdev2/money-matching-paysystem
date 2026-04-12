@@ -4,6 +4,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../logic/settings/settings_bloc.dart';
 import '../../logic/settings/settings_event.dart';
 import '../../logic/settings/settings_state.dart';
+import '../../logic/theme/theme_bloc.dart';
+import '../../logic/theme/theme_event.dart';
+import '../../logic/theme/theme_state.dart';
 import '../../core/injection.dart';
 
 class MainLayout extends StatelessWidget {
@@ -23,7 +26,7 @@ class MainLayout extends StatelessWidget {
               // Sidebar
               Container(
                 width: 260,
-                color: const Color.fromARGB(255, 255, 255, 255),
+                color: Theme.of(context).colorScheme.surface,
                 child: Column(
                   children: [
                     BlocBuilder<SettingsBloc, SettingsState>(
@@ -52,8 +55,10 @@ class MainLayout extends StatelessWidget {
                               Expanded(
                                 child: Text(
                                   siteName,
-                                  style: const TextStyle(
-                                    color: Colors.black87,
+                                  style: TextStyle(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .onSurface,
                                     fontSize: 18,
                                     fontWeight: FontWeight.bold,
                                   ),
@@ -173,20 +178,24 @@ class MainLayout extends StatelessWidget {
     return Container(
       height: 70,
       padding: const EdgeInsets.symmetric(horizontal: 24),
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        border: Border(bottom: BorderSide(color: Color(0xFFEEEEEE))),
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.surface,
+        border: Border(
+          bottom: BorderSide(color: Theme.of(context).dividerColor),
+        ),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
+          const ThemeSwitcher(),
+          const SizedBox(width: 20),
           const Icon(Icons.notifications_none, color: Colors.grey),
           const SizedBox(width: 20),
           Container(
             width: 35,
             height: 35,
-            decoration: const BoxDecoration(
-              color: Colors.blue,
+            decoration: BoxDecoration(
+              color: Theme.of(context).colorScheme.primary,
               shape: BoxShape.circle,
             ),
             child: const Center(
@@ -205,28 +214,97 @@ class MainLayout extends StatelessWidget {
     String route,
     bool isActive,
   ) {
+    final colorScheme = Theme.of(context).colorScheme;
     return Container(
       margin: const EdgeInsets.only(bottom: 4),
       decoration: BoxDecoration(
-        color: isActive ? Colors.blue.withOpacity(0.1) : Colors.transparent,
+        color: isActive ? colorScheme.primary.withValues(alpha: 0.1) : Colors.transparent,
         borderRadius: BorderRadius.circular(8),
       ),
       child: ListTile(
         onTap: () => context.go(route),
         leading: Icon(
           icon,
-          color: isActive ? Colors.blue : Colors.grey,
+          color: isActive ? colorScheme.primary : Colors.grey,
           size: 22,
         ),
         title: Text(
           title,
           style: TextStyle(
-            color: isActive ? Colors.blue : Colors.black54,
+            color: isActive ? colorScheme.primary : colorScheme.onSurface.withValues(alpha: 0.6),
             fontSize: 14,
             fontWeight: isActive ? FontWeight.bold : FontWeight.normal,
           ),
         ),
       ),
+    );
+  }
+}
+
+class ThemeSwitcher extends StatelessWidget {
+  const ThemeSwitcher({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<ThemeBloc, ThemeState>(
+      builder: (context, state) {
+        return Row(
+          children: [
+            // Color Presets
+            ...[
+              const Color(0xFF2563EB), // Blue
+              const Color(0xFF7C3AED), // Purple
+              const Color(0xFF10B981), // Green
+              const Color(0xFFF59E0B), // Amber
+              const Color(0xFFEF4444), // Red
+            ].map(
+              (color) => Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 4),
+                child: InkWell(
+                  onTap: () =>
+                      context.read<ThemeBloc>().add(ChangePrimaryColor(color)),
+                  child: Container(
+                    width: 20,
+                    height: 20,
+                    decoration: BoxDecoration(
+                      color: color,
+                      shape: BoxShape.circle,
+                      border: Border.all(
+                        color: state.primaryColor == color
+                            ? Colors.white
+                            : Colors.transparent,
+                        width: 2,
+                      ),
+                      boxShadow: [
+                        if (state.primaryColor == color)
+                          BoxShadow(
+                            color: color.withValues(alpha: 0.4),
+                            blurRadius: 4,
+                            spreadRadius: 1,
+                          ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(width: 16),
+            const VerticalDivider(width: 1, indent: 15, endIndent: 15),
+            const SizedBox(width: 16),
+            // Light/Dark Toggle
+            IconButton(
+              icon: Icon(
+                state.themeMode == ThemeMode.light
+                    ? Icons.dark_mode_outlined
+                    : Icons.light_mode_outlined,
+                size: 20,
+              ),
+              onPressed: () => context.read<ThemeBloc>().add(ToggleThemeMode()),
+              tooltip: "Switch Theme",
+            ),
+          ],
+        );
+      },
     );
   }
 }

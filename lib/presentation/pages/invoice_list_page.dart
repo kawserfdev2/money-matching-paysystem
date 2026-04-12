@@ -48,7 +48,6 @@ class _InvoiceListPageState extends State<InvoiceListPage>
     return BlocProvider(
       create: (context) => getIt<InvoiceBloc>()..add(const LoadInvoices()),
       child: Scaffold(
-        backgroundColor: const Color(0xFFF8FAFC),
         body: Padding(
           padding: const EdgeInsets.all(24.0),
           child: Column(
@@ -66,8 +65,8 @@ class _InvoiceListPageState extends State<InvoiceListPage>
                     icon: const Icon(Icons.add),
                     label: const Text("Create Invoice"),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF2563EB),
-                      foregroundColor: Colors.white,
+                      backgroundColor: Theme.of(context).colorScheme.primary,
+                      foregroundColor: Theme.of(context).colorScheme.onPrimary,
                       padding: const EdgeInsets.symmetric(
                         horizontal: 20,
                         vertical: 12,
@@ -81,15 +80,15 @@ class _InvoiceListPageState extends State<InvoiceListPage>
               // Status Tabs
               Container(
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: Theme.of(context).colorScheme.surface,
                   borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: Colors.grey.shade200),
+                  border: Border.all(color: Theme.of(context).colorScheme.outlineVariant),
                 ),
                 child: TabBar(
                   controller: _tabController,
                   isScrollable: true,
-                  indicatorColor: const Color(0xFF2563EB),
-                  labelColor: const Color(0xFF2563EB),
+                  indicatorColor: Theme.of(context).colorScheme.primary,
+                  labelColor: Theme.of(context).colorScheme.primary,
                   unselectedLabelColor: Colors.grey,
                   tabs: _tabs.map((tab) => Tab(text: tab)).toList(),
                 ),
@@ -101,9 +100,9 @@ class _InvoiceListPageState extends State<InvoiceListPage>
                 child: Container(
                   clipBehavior: Clip.antiAlias,
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: Theme.of(context).colorScheme.surface,
                     borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: Colors.grey.shade200),
+                    border: Border.all(color: Theme.of(context).colorScheme.outlineVariant),
                   ),
                   child: BlocBuilder<InvoiceBloc, InvoiceState>(
                     builder: (context, state) {
@@ -137,8 +136,10 @@ class _InvoiceListPageState extends State<InvoiceListPage>
     return DataTable2(
       columnSpacing: 12,
       horizontalMargin: 12,
-      minWidth: 1000,
-      headingRowColor: MaterialStateProperty.all(const Color(0xFFF8FAFC)),
+      minWidth: 800,
+      headingRowColor: WidgetStateProperty.all(
+        Theme.of(context).colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
+      ),
       columns: const [
         DataColumn2(label: Text('Invoice ID'), size: ColumnSize.M),
         DataColumn2(label: Text('Customer'), size: ColumnSize.L),

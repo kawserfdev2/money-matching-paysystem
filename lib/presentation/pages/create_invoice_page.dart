@@ -29,15 +29,20 @@ class CreateInvoicePage extends StatelessWidget {
         ),
       ],
       child: Scaffold(
-        backgroundColor: const Color(0xFFF8FAFC),
         appBar: AppBar(
-          title: const Text("Create New Invoice"),
-          backgroundColor: Colors.white,
-          foregroundColor: Colors.black,
+          title: Text(
+            "Create New Invoice",
+            style: TextStyle(
+              color: Theme.of(context).colorScheme.onSurface,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          backgroundColor: Theme.of(context).colorScheme.surface,
           elevation: 0,
           leading: IconButton(
             icon: const Icon(Icons.arrow_back),
             onPressed: () => context.pop(),
+            color: Theme.of(context).colorScheme.onSurface,
           ),
           actions: [
             BlocBuilder<InvoiceBloc, InvoiceState>(
@@ -53,8 +58,8 @@ class CreateInvoicePage extends StatelessWidget {
                                 SaveInvoice(),
                               ),
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFF2563EB),
-                          foregroundColor: Colors.white,
+                          backgroundColor: Theme.of(context).colorScheme.primary,
+                          foregroundColor: Theme.of(context).colorScheme.onPrimary,
                         ),
                         child: state.isSaving
                             ? const SizedBox(
@@ -127,9 +132,9 @@ class CreateInvoicePage extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey.shade200),
+        border: Border.all(color: Theme.of(context).colorScheme.outlineVariant),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -254,9 +259,9 @@ class CreateInvoicePage extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey.shade200),
+        border: Border.all(color: Theme.of(context).colorScheme.outlineVariant),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -370,9 +375,9 @@ class CreateInvoicePage extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey.shade200),
+        border: Border.all(color: Theme.of(context).colorScheme.outlineVariant),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -426,16 +431,18 @@ class CreateInvoicePage extends StatelessWidget {
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 24),
-                _buildSummaryRow("Subtotal", "৳${state.subtotal}"),
+                _buildSummaryRow(context, "Subtotal", "৳${state.subtotal}"),
                 _buildSummaryRow(
+                  context,
                   "Total Discount",
                   "-৳${state.totalDiscount}",
-                  color: Colors.red,
+                  color: Theme.of(context).colorScheme.error,
                 ),
-                _buildSummaryRow("Total VAT", "৳${state.totalVat}"),
-                _buildSummaryRow("Shipping", "৳${state.shippingCharge}"),
+                _buildSummaryRow(context, "Total VAT", "৳${state.totalVat}"),
+                _buildSummaryRow(context, "Shipping", "৳${state.shippingCharge}"),
                 const Divider(height: 32),
                 _buildSummaryRow(
+                  context,
                   "Grand Total",
                   "৳${state.grandTotal}",
                   isBold: true,
@@ -451,12 +458,14 @@ class CreateInvoicePage extends StatelessWidget {
   }
 
   Widget _buildSummaryRow(
+    BuildContext context,
     String label,
     String value, {
     Color? color,
     bool isBold = false,
     double fontSize = 14,
   }) {
+    final colorScheme = Theme.of(context).colorScheme;
     return Padding(
       padding: const EdgeInsets.only(bottom: 12.0),
       child: Row(
@@ -464,12 +473,12 @@ class CreateInvoicePage extends StatelessWidget {
         children: [
           Text(
             label,
-            style: TextStyle(color: Colors.grey, fontSize: fontSize),
+            style: TextStyle(color: colorScheme.onSurfaceVariant, fontSize: fontSize),
           ),
           Text(
             value,
             style: TextStyle(
-              color: color ?? Colors.black,
+              color: color ?? colorScheme.onSurface,
               fontWeight: isBold ? FontWeight.bold : FontWeight.w500,
               fontSize: fontSize,
             ),

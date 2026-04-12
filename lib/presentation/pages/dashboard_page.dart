@@ -17,7 +17,6 @@ class DashboardPage extends StatelessWidget {
     return BlocProvider(
       create: (context) => getIt<DashboardBloc>()..add(FetchDashboardData()),
       child: Scaffold(
-        backgroundColor: const Color(0xFFF8FAFC),
 
         body: BlocBuilder<DashboardBloc, DashboardState>(
           builder: (context, state) {
@@ -55,12 +54,12 @@ class DashboardPage extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
+                    Text(
                       "Analytics Overview",
                       style: TextStyle(
                         fontSize: 24,
                         fontWeight: FontWeight.bold,
-                        color: Color(0xFF1E293B),
+                        color: Theme.of(context).colorScheme.onBackground,
                       ),
                     ),
                     const SizedBox(height: 24),

@@ -49,7 +49,7 @@ class _CustomerFormDrawerState extends State<CustomerFormDrawer> {
     return Material(
       child: Container(
         width: MediaQuery.of(context).size.width * 0.4,
-        color: Colors.white,
+        color: Theme.of(context).colorScheme.surface,
         child: Column(
           children: [
             _buildHeader(context),
@@ -147,18 +147,23 @@ class _CustomerFormDrawerState extends State<CustomerFormDrawer> {
   }
 
   Widget _buildHeader(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        color: Colors.white,
-        border: Border(bottom: BorderSide(color: Colors.grey.shade200)),
+        color: colorScheme.surface,
+        border: Border(bottom: BorderSide(color: colorScheme.outlineVariant)),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
             widget.editCustomer == null ? "Add New Customer" : "Edit Customer",
-            style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              color: colorScheme.onSurface,
+            ),
           ),
           IconButton(
             icon: const Icon(Icons.close),
@@ -235,8 +240,8 @@ class _CustomerFormDrawerState extends State<CustomerFormDrawer> {
           child: ElevatedButton(
             onPressed: _submit,
             style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFF2563EB),
-              foregroundColor: Colors.white,
+              backgroundColor: Theme.of(context).colorScheme.primary,
+              foregroundColor: Theme.of(context).colorScheme.onPrimary,
               padding: const EdgeInsets.symmetric(vertical: 20),
             ),
             child: const Text("Save Customer"),

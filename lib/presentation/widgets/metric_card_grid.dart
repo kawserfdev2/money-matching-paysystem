@@ -24,19 +24,43 @@ class MetricCardGrid extends StatelessWidget {
             mainAxisSpacing: 16,
             childAspectRatio: 1.8,
             children: [
-              _buildCard("Today", s.todayRevenue, s.todayChange),
-              _buildCard("Yesterday", s.yesterdayRevenue, 0, showChange: false),
-              _buildCard("This Week", s.thisWeekRevenue, s.weekChange),
-              _buildCard("Last Week", s.lastWeekRevenue, 0, showChange: false),
-              _buildCard("This Month", s.thisMonthRevenue, s.monthChange),
+              _buildCard(context, "Today", s.todayRevenue, s.todayChange),
               _buildCard(
+                context,
+                "Yesterday",
+                s.yesterdayRevenue,
+                0,
+                showChange: false,
+              ),
+              _buildCard(context, "This Week", s.thisWeekRevenue, s.weekChange),
+              _buildCard(
+                context,
+                "Last Week",
+                s.lastWeekRevenue,
+                0,
+                showChange: false,
+              ),
+              _buildCard(
+                context,
+                "This Month",
+                s.thisMonthRevenue,
+                s.monthChange,
+              ),
+              _buildCard(
+                context,
                 "Last Month",
                 s.lastMonthRevenue,
                 0,
                 showChange: false,
               ),
-              _buildCard("This Year", s.thisYearRevenue, s.yearChange),
-              _buildCard("Last Year", s.lastYearRevenue, 0, showChange: false),
+              _buildCard(context, "This Year", s.thisYearRevenue, s.yearChange),
+              _buildCard(
+                context,
+                "Last Year",
+                s.lastYearRevenue,
+                0,
+                showChange: false,
+              ),
             ],
           );
         }
@@ -46,6 +70,7 @@ class MetricCardGrid extends StatelessWidget {
   }
 
   Widget _buildCard(
+    BuildContext context,
     String title,
     double amount,
     double change, {
@@ -57,11 +82,14 @@ class MetricCardGrid extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.grey.shade200),
+        border: Border.all(color: Theme.of(context).dividerColor),
         boxShadow: [
-          BoxShadow(color: Colors.black.withOpacity(0.02), blurRadius: 10),
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.02),
+            blurRadius: 10,
+          ),
         ],
       ),
       child: Column(

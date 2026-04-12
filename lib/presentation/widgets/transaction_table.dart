@@ -33,7 +33,9 @@ class TransactionTable extends StatelessWidget {
             columnSpacing: 12,
             horizontalMargin: 12,
             minWidth: 1000,
-            headingRowColor: MaterialStateProperty.all(const Color(0xFFF8FAFC)),
+             headingRowColor: WidgetStateProperty.all(
+                Theme.of(context).colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
+              ),
             columns: const [
               DataColumn2(label: Text('Customer'), size: ColumnSize.L),
               DataColumn2(label: Text('Gateway'), size: ColumnSize.M),
@@ -121,7 +123,7 @@ class TransactionTable extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
+        color: color.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(4),
       ),
       child: Text(

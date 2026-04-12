@@ -19,14 +19,13 @@ class PaymentLinkListPage extends StatelessWidget {
     return BlocProvider(
       create: (context) => getIt<PaymentLinkBloc>()..add(LoadPaymentLinks()),
       child: Scaffold(
-        backgroundColor: const Color(0xFFF8FAFC),
         body: BlocListener<PaymentLinkBloc, PaymentLinkState>(
           listener: (context, state) {
             if (state is PaymentLinkActionSuccess) {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                   content: Text(state.message),
-                  backgroundColor: Colors.green,
+                  backgroundColor: Theme.of(context).colorScheme.primary,
                 ),
               );
             }
@@ -34,7 +33,7 @@ class PaymentLinkListPage extends StatelessWidget {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                   content: Text(state.message),
-                  backgroundColor: Colors.red,
+                  backgroundColor: Theme.of(context).colorScheme.error,
                 ),
               );
             }
@@ -49,11 +48,12 @@ class PaymentLinkListPage extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Text(
+                        Text(
                           "Payment Links",
                           style: TextStyle(
                             fontSize: 24,
                             fontWeight: FontWeight.bold,
+                            color: Theme.of(context).colorScheme.onSurface,
                           ),
                         ),
                         ElevatedButton.icon(
@@ -61,8 +61,8 @@ class PaymentLinkListPage extends StatelessWidget {
                           icon: const Icon(Icons.add),
                           label: const Text("Create New Link"),
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xFF2563EB),
-                            foregroundColor: Colors.white,
+                            backgroundColor: Theme.of(context).colorScheme.primary,
+                            foregroundColor: Theme.of(context).colorScheme.onPrimary,
                             padding: const EdgeInsets.symmetric(
                               horizontal: 20,
                               vertical: 12,
@@ -78,9 +78,9 @@ class PaymentLinkListPage extends StatelessWidget {
                       child: Container(
                         clipBehavior: Clip.antiAlias,
                         decoration: BoxDecoration(
-                          color: Colors.white,
+                          color: Theme.of(context).colorScheme.surface,
                           borderRadius: BorderRadius.circular(12),
-                          border: Border.all(color: Colors.grey.shade200),
+                          border: Border.all(color: Theme.of(context).colorScheme.outlineVariant),
                         ),
                         child: BlocBuilder<PaymentLinkBloc, PaymentLinkState>(
                           builder: (context, state) {
@@ -112,7 +112,9 @@ class PaymentLinkListPage extends StatelessWidget {
       columnSpacing: 12,
       horizontalMargin: 12,
       minWidth: 1000,
-      headingRowColor: MaterialStateProperty.all(const Color(0xFFF8FAFC)),
+      headingRowColor: WidgetStateProperty.all(
+        Theme.of(context).colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
+      ),
       columns: const [
         DataColumn2(label: Text('Product Name'), size: ColumnSize.L),
         DataColumn2(label: Text('Price'), size: ColumnSize.M),
@@ -143,19 +145,19 @@ class PaymentLinkListPage extends StatelessWidget {
                     tooltip: "Copy Link",
                   ),
                   IconButton(
-                    icon: const Icon(
+                    icon: Icon(
                       Icons.qr_code,
                       size: 20,
-                      color: Colors.blue,
+                      color: Theme.of(context).colorScheme.primary,
                     ),
                     onPressed: () => _showQR(context, link),
                     tooltip: "Show QR",
                   ),
                   IconButton(
-                    icon: const Icon(
+                    icon: Icon(
                       Icons.delete_outline,
                       size: 20,
-                      color: Colors.red,
+                      color: Theme.of(context).colorScheme.error,
                     ),
                     onPressed: () => _confirmDelete(context, link.id),
                     tooltip: "Delete",
@@ -175,8 +177,8 @@ class PaymentLinkListPage extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
         color: active
-            ? Colors.green.withOpacity(0.1)
-            : Colors.red.withOpacity(0.1),
+            ? Colors.green.withValues(alpha: 0.1)
+            : Colors.red.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(12),
       ),
       child: Text(
@@ -219,7 +221,10 @@ class PaymentLinkListPage extends StatelessWidget {
             const SizedBox(height: 16),
             Text(
               "https://amarpay.com/pay/${link.slug}",
-              style: const TextStyle(fontSize: 12, color: Colors.grey),
+              style: TextStyle(
+                fontSize: 12,
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
+              ),
             ),
           ],
         ),
@@ -230,6 +235,10 @@ class PaymentLinkListPage extends StatelessWidget {
           ),
           ElevatedButton(
             onPressed: () => _copyLink(context, link.slug),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Theme.of(context).colorScheme.primary,
+              foregroundColor: Theme.of(context).colorScheme.onPrimary,
+            ),
             child: const Text("Copy Link"),
           ),
         ],
@@ -285,7 +294,10 @@ class PaymentLinkListPage extends StatelessWidget {
               bloc.add(DeletePaymentLink(id));
               Navigator.pop(ctx);
             },
-            child: const Text("Delete", style: TextStyle(color: Colors.red)),
+            child: Text(
+              "Delete",
+              style: TextStyle(color: Theme.of(context).colorScheme.error),
+            ),
           ),
         ],
       ),

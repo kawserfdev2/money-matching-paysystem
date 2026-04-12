@@ -20,19 +20,24 @@ class _PaymentLinkFormDrawerState extends State<PaymentLinkFormDrawer> {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     return Material(
+      color: colorScheme.surface,
       child: Container(
         width: MediaQuery.of(context).size.width * 0.4,
-        color: Colors.white,
         padding: const EdgeInsets.all(24),
         child: Form(
           key: _formKey,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
+              Text(
                 "Create Payment Link",
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  color: colorScheme.onSurface,
+                ),
               ),
               const SizedBox(height: 32),
               TextFormField(
@@ -100,6 +105,10 @@ class _PaymentLinkFormDrawerState extends State<PaymentLinkFormDrawer> {
                   Expanded(
                     child: OutlinedButton(
                       onPressed: () => Navigator.pop(context),
+                      style: OutlinedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(vertical: 20),
+                        side: BorderSide(color: colorScheme.outlineVariant),
+                      ),
                       child: const Text("Cancel"),
                     ),
                   ),
@@ -123,8 +132,9 @@ class _PaymentLinkFormDrawerState extends State<PaymentLinkFormDrawer> {
                         }
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.blue,
-                        foregroundColor: Colors.white,
+                        backgroundColor: colorScheme.primary,
+                        foregroundColor: colorScheme.onPrimary,
+                        padding: const EdgeInsets.symmetric(vertical: 20),
                       ),
                       child: const Text("Create Link"),
                     ),
