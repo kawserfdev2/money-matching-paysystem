@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../domain/entities/customer_entity.dart';
+import 'responsive.dart';
 
 class CustomerInsightsDrawer extends StatelessWidget {
   final CustomerEntity customer;
@@ -9,8 +10,11 @@ class CustomerInsightsDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    final bool isMobile = Responsive.isMobile(context);
+    final double width = MediaQuery.of(context).size.width;
+
     return Container(
-      width: MediaQuery.of(context).size.width * 0.4,
+      width: isMobile ? width : width * 0.4,
       color: colorScheme.surface,
       child: Column(
         children: [
@@ -159,8 +163,34 @@ class CustomerInsightsDrawer extends StatelessWidget {
       ],
     );
   }
-
   Widget _buildStatsRow(BuildContext context) {
+    if (Responsive.isMobile(context)) {
+      return Column(
+        children: [
+          _buildStatCard(
+            context,
+            "Total Spent",
+            "৳${customer.totalSpent.toStringAsFixed(2)}",
+            Theme.of(context).colorScheme.primary,
+          ),
+          const SizedBox(height: 12),
+          _buildStatCard(
+            context,
+            "Payments",
+            customer.totalPayments.toString(),
+            Colors.purple,
+          ),
+          const SizedBox(height: 12),
+          _buildStatCard(
+            context,
+            "Success Rate",
+            "${customer.successRate.toStringAsFixed(1)}%",
+            Colors.green,
+          ),
+        ],
+      );
+    }
+
     return Row(
       children: [
         Expanded(

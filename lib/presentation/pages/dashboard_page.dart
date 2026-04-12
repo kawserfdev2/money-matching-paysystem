@@ -4,6 +4,7 @@ import '../../core/injection.dart';
 import '../../logic/dashboard/dashboard_bloc.dart';
 import '../../logic/dashboard/dashboard_event.dart';
 import '../../logic/dashboard/dashboard_state.dart';
+import '../widgets/responsive.dart';
 import '../widgets/dashboard_shimmer.dart';
 import '../widgets/latest_payments_table.dart';
 import '../widgets/payment_chart.dart';
@@ -50,14 +51,14 @@ class DashboardPage extends StatelessWidget {
 
             if (state is DashboardLoaded) {
               return SingleChildScrollView(
-                padding: const EdgeInsets.all(24),
+                padding: EdgeInsets.all(Responsive.isMobile(context) ? 16 : 24),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       "Analytics Overview",
                       style: TextStyle(
-                        fontSize: 24,
+                        fontSize: Responsive.isMobile(context) ? 20 : 24,
                         fontWeight: FontWeight.bold,
                         color: Theme.of(context).colorScheme.onBackground,
                       ),
@@ -84,19 +85,23 @@ class DashboardPage extends StatelessWidget {
     return LayoutBuilder(
       builder: (context, constraints) {
         int crossAxisCount = 4;
+        double aspectRatio = 2.5;
+
         if (constraints.maxWidth < 600) {
           crossAxisCount = 1;
-        } else if (constraints.maxWidth < 1000) {
+          aspectRatio = 3.0;
+        } else if (constraints.maxWidth < 1100) {
           crossAxisCount = 2;
+          aspectRatio = 2.5;
         }
 
         return GridView.count(
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
           crossAxisCount: crossAxisCount,
-          crossAxisSpacing: 20,
-          mainAxisSpacing: 20,
-          childAspectRatio: 2.5,
+          crossAxisSpacing: Responsive.isMobile(context) ? 12 : 20,
+          mainAxisSpacing: Responsive.isMobile(context) ? 12 : 20,
+          childAspectRatio: aspectRatio,
           children: [
             StatCard(
               title: "Total Payments",

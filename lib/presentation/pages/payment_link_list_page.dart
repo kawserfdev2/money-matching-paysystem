@@ -5,6 +5,7 @@ import 'package:data_table_2/data_table_2.dart';
 import 'package:intl/intl.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import '../../core/injection.dart';
+import '../widgets/responsive.dart';
 import '../../logic/payment_link/payment_link_bloc.dart';
 import '../../logic/payment_link/payment_link_event.dart';
 import '../../logic/payment_link/payment_link_state.dart';
@@ -41,7 +42,7 @@ class PaymentLinkListPage extends StatelessWidget {
           child: Builder(
             builder: (context) {
               return Padding(
-                padding: const EdgeInsets.all(24.0),
+                padding: EdgeInsets.all(Responsive.isMobile(context) ? 16 : 24.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [

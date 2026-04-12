@@ -8,6 +8,7 @@ import '../../logic/invoice/invoice_bloc.dart';
 import '../../logic/invoice/invoice_event.dart';
 import '../../logic/invoice/invoice_state.dart';
 import '../../domain/entities/invoice_entity.dart';
+import '../widgets/responsive.dart';
 
 class InvoiceListPage extends StatefulWidget {
   const InvoiceListPage({super.key});
@@ -49,16 +50,22 @@ class _InvoiceListPageState extends State<InvoiceListPage>
       create: (context) => getIt<InvoiceBloc>()..add(const LoadInvoices()),
       child: Scaffold(
         body: Padding(
-          padding: const EdgeInsets.all(24.0),
+          padding: EdgeInsets.all(Responsive.isMobile(context) ? 16 : 24.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              Wrap(
+                alignment: WrapAlignment.spaceBetween,
+                crossAxisAlignment: WrapCrossAlignment.center,
+                spacing: 16,
+                runSpacing: 16,
                 children: [
-                  const Text(
+                  Text(
                     "Billing & Invoices",
-                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                    style: TextStyle(
+                      fontSize: Responsive.isMobile(context) ? 20 : 24,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                   ElevatedButton.icon(
                     onPressed: () => context.push('/invoices/create'),
@@ -207,9 +214,9 @@ class _InvoiceListPageState extends State<InvoiceListPage>
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
+        color: color.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: color.withOpacity(0.2)),
+        border: Border.all(color: color.withValues(alpha: 0.2)),
       ),
       child: Text(
         status.toUpperCase(),

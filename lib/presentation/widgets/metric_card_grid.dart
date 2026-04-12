@@ -3,12 +3,24 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../logic/report/report_bloc.dart';
 import '../../logic/report/report_state.dart';
 import 'package:intl/intl.dart';
+import 'responsive.dart';
 
 class MetricCardGrid extends StatelessWidget {
   const MetricCardGrid({super.key});
 
   @override
   Widget build(BuildContext context) {
+    int crossAxisCount = 4;
+    double aspectRatio = 1.8;
+
+    if (Responsive.isMobile(context)) {
+      crossAxisCount = 1;
+      aspectRatio = 2.5;
+    } else if (Responsive.isTablet(context)) {
+      crossAxisCount = 2;
+      aspectRatio = 2.0;
+    }
+
     return BlocBuilder<ReportBloc, ReportState>(
       builder: (context, state) {
         if (state is ReportLoading) {
@@ -17,12 +29,12 @@ class MetricCardGrid extends StatelessWidget {
         if (state is ReportLoaded) {
           final s = state.stats;
           return GridView.count(
-            crossAxisCount: 4,
+            crossAxisCount: crossAxisCount,
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
             crossAxisSpacing: 16,
             mainAxisSpacing: 16,
-            childAspectRatio: 1.8,
+            childAspectRatio: aspectRatio,
             children: [
               _buildCard(context, "Today", s.todayRevenue, s.todayChange),
               _buildCard(

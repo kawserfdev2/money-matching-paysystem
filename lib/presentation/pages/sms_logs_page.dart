@@ -6,6 +6,7 @@ import '../../logic/automation/automation_event.dart';
 import '../../logic/automation/automation_state.dart';
 import '../../domain/entities/sms_log_entity.dart';
 import '../../core/injection.dart';
+import '../widgets/responsive.dart';
 
 class SmsLogsPage extends StatelessWidget {
   const SmsLogsPage({super.key});
@@ -45,9 +46,10 @@ class SmsLogsPage extends StatelessWidget {
 
   Widget _buildConnectedDevices(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    final padding = Responsive.isMobile(context) ? 16.0 : 24.0;
     return Container(
-      padding: const EdgeInsets.all(24),
-      margin: const EdgeInsets.all(24),
+      padding: EdgeInsets.all(padding),
+      margin: EdgeInsets.all(padding),
       decoration: BoxDecoration(
         color: colorScheme.surface,
         borderRadius: BorderRadius.circular(16),
@@ -133,7 +135,7 @@ class SmsLogsPage extends StatelessWidget {
       builder: (context, state) {
         if (state is SmsLogsLoaded) {
           return ListView.separated(
-            padding: const EdgeInsets.all(24),
+            padding: EdgeInsets.all(Responsive.isMobile(context) ? 16 : 24),
             itemCount: state.logs.length,
             separatorBuilder: (_, __) => const SizedBox(height: 12),
             itemBuilder: (context, index) => _buildLogCard(context, state.logs[index]),

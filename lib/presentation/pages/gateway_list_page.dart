@@ -7,6 +7,7 @@ import '../../logic/gateway/gateway_bloc.dart';
 import '../../logic/gateway/gateway_event.dart';
 import '../../logic/gateway/gateway_state.dart';
 import '../../domain/entities/gateway_entity.dart';
+import '../widgets/responsive.dart';
 
 class GatewayListPage extends StatelessWidget {
   const GatewayListPage({super.key});
@@ -17,7 +18,7 @@ class GatewayListPage extends StatelessWidget {
       create: (context) => getIt<GatewayBloc>()..add(LoadGateways()),
       child: Scaffold(
         body: Padding(
-          padding: const EdgeInsets.all(24.0),
+          padding: EdgeInsets.all(Responsive.isMobile(context) ? 16 : 24.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -27,9 +28,12 @@ class GatewayListPage extends StatelessWidget {
                 spacing: 16,
                 runSpacing: 16,
                 children: [
-                  const Text(
+                  Text(
                     "Payment Gateways",
-                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                    style: TextStyle(
+                      fontSize: Responsive.isMobile(context) ? 20 : 24,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                   ElevatedButton.icon(
                     onPressed: () => context.push('/gateways/add'),

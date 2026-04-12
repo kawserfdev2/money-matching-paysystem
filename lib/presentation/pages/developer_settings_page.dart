@@ -5,6 +5,7 @@ import '../../core/injection.dart';
 import '../../logic/developer/developer_bloc.dart';
 import '../../logic/developer/developer_event.dart';
 import '../../logic/developer/developer_state.dart';
+import '../widgets/responsive.dart';
 
 class DeveloperSettingsPage extends StatefulWidget {
   const DeveloperSettingsPage({super.key});
@@ -42,15 +43,16 @@ class _DeveloperSettingsPageState extends State<DeveloperSettingsPage> {
               final keys = state.keys;
               final brandId = state.brandId ?? "";
               return SingleChildScrollView(
-                padding: const EdgeInsets.all(32),
+                padding: EdgeInsets.all(Responsive.isMobile(context) ? 16 : 24),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
-                      "Developer Settings",
+                    Text(
+                      "Settings",
                       style: TextStyle(
-                        fontSize: 24,
+                        color: Theme.of(context).colorScheme.onSurface,
                         fontWeight: FontWeight.bold,
+                        fontSize: Responsive.isMobile(context) ? 20 : 22,
                       ),
                     ),
                     const SizedBox(height: 8),
@@ -92,47 +94,64 @@ class _DeveloperSettingsPageState extends State<DeveloperSettingsPage> {
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
         color: isSandbox
-            ? Theme.of(context).colorScheme.tertiaryContainer.withOpacity(0.3)
-            : Theme.of(context).colorScheme.primaryContainer.withOpacity(0.3),
+            ? Theme.of(context).colorScheme.tertiaryContainer.withValues(alpha: 0.3)
+            : Theme.of(context).colorScheme.primaryContainer.withValues(alpha: 0.3),
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
           color: isSandbox ? Theme.of(context).colorScheme.tertiary : Theme.of(context).colorScheme.primary,
         ),
       ),
-      child: Row(
-        children: [
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  isSandbox ? "Sandbox Mode Enabled" : "Live Mode Enabled",
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: isSandbox
-                        ? Theme.of(context).colorScheme.onTertiaryContainer
-                        : Theme.of(context).colorScheme.onPrimaryContainer,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                const Text(
-                  "When enabled, all transactions will be simulated and no real money will be charged.",
-                  style: TextStyle(fontSize: 13),
-                ),
-              ],
-            ),
+      child: Responsive.isMobile(context) 
+        ? Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _buildToggleHeader(isSandbox, context),
+              const SizedBox(height: 16),
+              _buildToggleControl(isSandbox, brandId, context),
+            ],
+          )
+        : Row(
+            children: [
+              Expanded(
+                child: _buildToggleHeader(isSandbox, context),
+              ),
+              _buildToggleControl(isSandbox, brandId, context),
+            ],
           ),
-          Switch(
-            value: isSandbox,
-            onChanged: (val) {
-              context.read<DeveloperBloc>().add(
-                ToggleSandboxMode(brandId, val),
-              );
-            },
+    );
+  }
+
+  Widget _buildToggleHeader(bool isSandbox, BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          isSandbox ? "Sandbox Mode Enabled" : "Live Mode Enabled",
+          style: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+            color: isSandbox
+                ? Theme.of(context).colorScheme.onTertiaryContainer
+                : Theme.of(context).colorScheme.onPrimaryContainer,
           ),
-        ],
-      ),
+        ),
+        const SizedBox(height: 4),
+        const Text(
+          "When enabled, all transactions will be simulated and no real money will be charged.",
+          style: TextStyle(fontSize: 13),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildToggleControl(bool isSandbox, String brandId, BuildContext context) {
+    return Switch(
+      value: isSandbox,
+      onChanged: (val) {
+        context.read<DeveloperBloc>().add(
+          ToggleSandboxMode(brandId, val),
+        );
+      },
     );
   }
 
@@ -163,8 +182,11 @@ class _DeveloperSettingsPageState extends State<DeveloperSettingsPage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        Wrap(
+          alignment: WrapAlignment.spaceBetween,
+          crossAxisAlignment: WrapCrossAlignment.center,
+          spacing: 16,
+          runSpacing: 16,
           children: [
             const Text(
               "API Credentials",
@@ -201,16 +223,19 @@ class _DeveloperSettingsPageState extends State<DeveloperSettingsPage> {
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.surfaceContainerHighest.withOpacity(0.3),
+            color: Theme.of(context).colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
             borderRadius: BorderRadius.circular(12),
             border: Border.all(color: Theme.of(context).colorScheme.outlineVariant),
           ),
           child: Row(
             children: [
               Expanded(
-                child: Text(
-                  isSecret && !_showSecret ? "sk_••••_••••••••••••••••" : value,
-                  style: const TextStyle(fontFamily: 'monospace', fontSize: 14),
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Text(
+                    isSecret && !_showSecret ? "sk_••••_••••••••••••••••" : value,
+                    style: const TextStyle(fontFamily: 'monospace', fontSize: 13),
+                  ),
                 ),
               ),
               if (isSecret)

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../domain/entities/payment_link_entity.dart';
+import 'responsive.dart';
 
 class PaymentLinkFormDrawer extends StatefulWidget {
   final Function(PaymentLinkEntity) onSave;
@@ -21,10 +22,13 @@ class _PaymentLinkFormDrawerState extends State<PaymentLinkFormDrawer> {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    final width = MediaQuery.of(context).size.width;
+    final isMobile = Responsive.isMobile(context);
+
     return Material(
       color: colorScheme.surface,
       child: Container(
-        width: MediaQuery.of(context).size.width * 0.4,
+        width: isMobile ? width : width * 0.4,
         padding: const EdgeInsets.all(24),
         child: Form(
           key: _formKey,
@@ -58,38 +62,62 @@ class _PaymentLinkFormDrawerState extends State<PaymentLinkFormDrawer> {
                 ),
               ),
               const SizedBox(height: 16),
-              Row(
-                children: [
-                  Expanded(
-                    flex: 2,
-                    child: TextFormField(
-                      controller: _amountController,
-                      keyboardType: TextInputType.number,
-                      decoration: const InputDecoration(
-                        labelText: "Amount *",
-                        border: OutlineInputBorder(),
-                      ),
-                      validator: (v) => v!.isEmpty ? "Required" : null,
-                    ),
+              if (isMobile) ...[
+                TextFormField(
+                  controller: _amountController,
+                  keyboardType: TextInputType.number,
+                  decoration: const InputDecoration(
+                    labelText: "Amount *",
+                    border: OutlineInputBorder(),
                   ),
-                  const SizedBox(width: 16),
-                  Expanded(
-                    flex: 1,
-                    child: DropdownButtonFormField<String>(
-                      value: _currency,
-                      decoration: const InputDecoration(
-                        labelText: "Currency",
-                        border: OutlineInputBorder(),
-                      ),
-                      items: const [
-                        DropdownMenuItem(value: 'BDT', child: Text("BDT")),
-                        DropdownMenuItem(value: 'USD', child: Text("USD")),
-                      ],
-                      onChanged: (v) => setState(() => _currency = v!),
-                    ),
+                  validator: (v) => v!.isEmpty ? "Required" : null,
+                ),
+                const SizedBox(height: 16),
+                DropdownButtonFormField<String>(
+                  value: _currency,
+                  decoration: const InputDecoration(
+                    labelText: "Currency",
+                    border: OutlineInputBorder(),
                   ),
-                ],
-              ),
+                  items: const [
+                    DropdownMenuItem(value: 'BDT', child: Text("BDT")),
+                    DropdownMenuItem(value: 'USD', child: Text("USD")),
+                  ],
+                  onChanged: (v) => setState(() => _currency = v!),
+                ),
+              ] else
+                Row(
+                  children: [
+                    Expanded(
+                      flex: 2,
+                      child: TextFormField(
+                        controller: _amountController,
+                        keyboardType: TextInputType.number,
+                        decoration: const InputDecoration(
+                          labelText: "Amount *",
+                          border: OutlineInputBorder(),
+                        ),
+                        validator: (v) => v!.isEmpty ? "Required" : null,
+                      ),
+                    ),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      flex: 1,
+                      child: DropdownButtonFormField<String>(
+                        value: _currency,
+                        decoration: const InputDecoration(
+                          labelText: "Currency",
+                          border: OutlineInputBorder(),
+                        ),
+                        items: const [
+                          DropdownMenuItem(value: 'BDT', child: Text("BDT")),
+                          DropdownMenuItem(value: 'USD', child: Text("USD")),
+                        ],
+                        onChanged: (v) => setState(() => _currency = v!),
+                      ),
+                    ),
+                  ],
+                ),
               const SizedBox(height: 16),
               TextFormField(
                 controller: _redirectController,

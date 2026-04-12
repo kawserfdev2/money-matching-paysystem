@@ -7,6 +7,7 @@ import '../../logic/payment/payment_state.dart';
 import '../../domain/repositories/payment_repository.dart';
 import '../widgets/transaction_filter_bar.dart';
 import '../widgets/transaction_table.dart';
+import '../widgets/responsive.dart';
 
 class PaymentListPage extends StatefulWidget {
   const PaymentListPage({super.key});
@@ -41,14 +42,14 @@ class _PaymentListPageState extends State<PaymentListPage>
       create: (context) => getIt<PaymentBloc>()..add(const LoadPayments()),
       child: Scaffold(
         body: Padding(
-          padding: const EdgeInsets.all(24.0),
+          padding: EdgeInsets.all(Responsive.isMobile(context) ? 16 : 24.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
                 "Transactions",
                 style: TextStyle(
-                  fontSize: 24,
+                  fontSize: Responsive.isMobile(context) ? 20 : 24,
                   fontWeight: FontWeight.bold,
                   color: colorScheme.onBackground,
                 ),

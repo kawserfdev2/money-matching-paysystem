@@ -5,6 +5,7 @@ import '../../core/injection.dart';
 import '../../logic/report/report_bloc.dart';
 import '../../logic/report/report_event.dart';
 import '../../logic/report/report_state.dart';
+import '../widgets/responsive.dart';
 import '../widgets/metric_card_grid.dart';
 import '../widgets/revenue_chart.dart';
 import '../widgets/success_gauge.dart';
@@ -30,17 +31,20 @@ class ReportsPage extends StatelessWidget {
           },
           builder: (context, state) {
             return SingleChildScrollView(
-              padding: const EdgeInsets.all(24.0),
+              padding: EdgeInsets.all(Responsive.isMobile(context) ? 16 : 24.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  Wrap(
+                    alignment: WrapAlignment.spaceBetween,
+                    crossAxisAlignment: WrapCrossAlignment.center,
+                    spacing: 16,
+                    runSpacing: 16,
                     children: [
                       Text(
                         "Financial Analytics",
                         style: TextStyle(
-                          fontSize: 28,
+                          fontSize: Responsive.isMobile(context) ? 24 : 28,
                           fontWeight: FontWeight.bold,
                           color: Theme.of(context).colorScheme.onBackground,
                         ),
@@ -54,14 +58,23 @@ class ReportsPage extends StatelessWidget {
                   const MetricCardGrid(),
                   const SizedBox(height: 32),
 
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Expanded(flex: 2, child: RevenueChart()),
-                      const SizedBox(width: 24),
-                      const Expanded(flex: 1, child: SuccessGauge()),
-                    ],
-                  ),
+                  if (Responsive.isDesktop(context))
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Expanded(flex: 2, child: RevenueChart()),
+                        const SizedBox(width: 24),
+                        const Expanded(flex: 1, child: SuccessGauge()),
+                      ],
+                    )
+                  else
+                    Column(
+                      children: [
+                        const RevenueChart(),
+                        const SizedBox(height: 24),
+                        const SuccessGauge(),
+                      ],
+                    ),
                 ],
               ),
             );

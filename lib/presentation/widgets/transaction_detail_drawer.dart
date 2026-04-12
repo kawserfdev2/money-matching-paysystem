@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../../domain/entities/payment_entity.dart';
+import 'responsive.dart';
 
 class TransactionDetailDrawer extends StatelessWidget {
   final PaymentEntity payment;
@@ -15,8 +16,11 @@ class TransactionDetailDrawer extends StatelessWidget {
     );
     final dateFormat = DateFormat('dd MMM yyyy, hh:mm a');
 
+    final bool isMobile = Responsive.isMobile(context);
+    final double width = MediaQuery.of(context).size.width;
+
     return Drawer(
-      width: 450,
+      width: isMobile ? width : 450,
       backgroundColor: Theme.of(context).colorScheme.surface,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

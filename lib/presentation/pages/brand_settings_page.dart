@@ -6,6 +6,7 @@ import '../../logic/settings/settings_event.dart';
 import '../../logic/settings/settings_state.dart';
 import '../../domain/entities/brand_entity.dart';
 import '../../core/injection.dart';
+import '../widgets/responsive.dart';
 
 class BrandSettingsPage extends StatefulWidget {
   const BrandSettingsPage({super.key});
@@ -44,6 +45,7 @@ class _BrandSettingsPageState extends State<BrandSettingsPage>
             style: TextStyle(
               color: Theme.of(context).colorScheme.onSurface,
               fontWeight: FontWeight.bold,
+              fontSize: Responsive.isMobile(context) ? 20 : 22,
             ),
           ),
           bottom: TabBar(
@@ -102,7 +104,7 @@ class _BrandSettingsPageState extends State<BrandSettingsPage>
 
   Widget _buildGeneralTab(BuildContext context, BrandEntity brand) {
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(24),
+      padding: EdgeInsets.all(Responsive.isMobile(context) ? 16 : 24),
       child: Form(
         key: _formKey,
         child: Column(
@@ -152,7 +154,7 @@ class _BrandSettingsPageState extends State<BrandSettingsPage>
     double progress,
   ) {
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(24),
+      padding: EdgeInsets.all(Responsive.isMobile(context) ? 16 : 24),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -204,7 +206,7 @@ class _BrandSettingsPageState extends State<BrandSettingsPage>
 
   Widget _buildLocalizationTab(BuildContext context, BrandEntity brand) {
     return Padding(
-      padding: const EdgeInsets.all(24),
+      padding: EdgeInsets.all(Responsive.isMobile(context) ? 16 : 24),
       child: _buildSection(
         "Currency & Region",
         "Set your default target currency for checkouts.",

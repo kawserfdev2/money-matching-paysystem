@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../domain/entities/customer_entity.dart';
+import 'responsive.dart';
 
 class CustomerFormDrawer extends StatefulWidget {
   final CustomerEntity? editCustomer;
@@ -43,12 +44,14 @@ class _CustomerFormDrawerState extends State<CustomerFormDrawer> {
     _postcodeController = TextEditingController(text: c?.postcode);
     _selectedCountry = c?.country;
   }
-
   @override
   Widget build(BuildContext context) {
+    final double width = MediaQuery.of(context).size.width;
+    final bool isMobile = Responsive.isMobile(context);
+
     return Material(
       child: Container(
-        width: MediaQuery.of(context).size.width * 0.4,
+        width: isMobile ? width : width * 0.4,
         color: Theme.of(context).colorScheme.surface,
         child: Column(
           children: [
@@ -69,24 +72,36 @@ class _CustomerFormDrawerState extends State<CustomerFormDrawer> {
                         ),
                       ),
                       const SizedBox(height: 16),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: _buildTextField(
-                              "First Name",
-                              _firstNameController,
-                              required: true,
+                      if (isMobile) ...[
+                        _buildTextField(
+                          "First Name",
+                          _firstNameController,
+                          required: true,
+                        ),
+                        const SizedBox(height: 16),
+                        _buildTextField(
+                          "Last Name",
+                          _lastNameController,
+                        ),
+                      ] else
+                        Row(
+                          children: [
+                            Expanded(
+                              child: _buildTextField(
+                                "First Name",
+                                _firstNameController,
+                                required: true,
+                              ),
                             ),
-                          ),
-                          const SizedBox(width: 16),
-                          Expanded(
-                            child: _buildTextField(
-                              "Last Name",
-                              _lastNameController,
+                            const SizedBox(width: 16),
+                            Expanded(
+                              child: _buildTextField(
+                                "Last Name",
+                                _lastNameController,
+                              ),
                             ),
-                          ),
-                        ],
-                      ),
+                          ],
+                        ),
                       const SizedBox(height: 16),
                       _buildTextField(
                         "Email",
@@ -109,30 +124,43 @@ class _CustomerFormDrawerState extends State<CustomerFormDrawer> {
                       const SizedBox(height: 16),
                       _buildTextField("Address", _addressController),
                       const SizedBox(height: 16),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: _buildTextField("City", _cityController),
-                          ),
-                          const SizedBox(width: 16),
-                          Expanded(
-                            child: _buildTextField("State", _stateController),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 16),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: _buildTextField(
-                              "Postcode",
-                              _postcodeController,
+                      if (isMobile) ...[
+                        _buildTextField("City", _cityController),
+                        const SizedBox(height: 16),
+                        _buildTextField("State", _stateController),
+                      ] else
+                        Row(
+                          children: [
+                            Expanded(
+                              child: _buildTextField("City", _cityController),
                             ),
-                          ),
-                          const SizedBox(width: 16),
-                          Expanded(child: _buildCountryDropdown()),
-                        ],
-                      ),
+                            const SizedBox(width: 16),
+                            Expanded(
+                              child: _buildTextField("State", _stateController),
+                            ),
+                          ],
+                        ),
+                      const SizedBox(height: 16),
+                      if (isMobile) ...[
+                        _buildTextField(
+                          "Postcode",
+                          _postcodeController,
+                        ),
+                        const SizedBox(height: 16),
+                        _buildCountryDropdown(),
+                      ] else
+                        Row(
+                          children: [
+                            Expanded(
+                              child: _buildTextField(
+                                "Postcode",
+                                _postcodeController,
+                              ),
+                            ),
+                            const SizedBox(width: 16),
+                            Expanded(child: _buildCountryDropdown()),
+                          ],
+                        ),
                       const SizedBox(height: 48),
                       _buildSubmitButtons(context),
                     ],

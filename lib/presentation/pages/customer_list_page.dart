@@ -9,6 +9,7 @@ import '../../domain/entities/customer_entity.dart';
 import '../widgets/customer_filter_bar.dart';
 import '../widgets/customer_insights_drawer.dart';
 import '../widgets/customer_form_drawer.dart';
+import '../widgets/responsive.dart';
 
 class CustomerListPage extends StatelessWidget {
   const CustomerListPage({super.key});
@@ -40,17 +41,20 @@ class CustomerListPage extends StatelessWidget {
           child: Builder(
             builder: (innerContext) {
               return Padding(
-                padding: const EdgeInsets.all(24.0),
+                padding: EdgeInsets.all(Responsive.isMobile(context) ? 16 : 24.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    Wrap(
+                      alignment: WrapAlignment.spaceBetween,
+                      crossAxisAlignment: WrapCrossAlignment.center,
+                      spacing: 16,
+                      runSpacing: 16,
                       children: [
-                        const Text(
+                        Text(
                           "Customers",
                           style: TextStyle(
-                            fontSize: 24,
+                            fontSize: Responsive.isMobile(context) ? 20 : 24,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
