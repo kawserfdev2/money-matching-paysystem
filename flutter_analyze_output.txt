@@ -1,0 +1,78 @@
+Analyzing amarpay...                                            
+
+   info • Don't invoke 'print' in production code • lib/data/repositories/activity_repository_impl.dart:39:7 • avoid_print
+   info • The import of '../models/invoice_model.dart' is unnecessary because all of the used elements are also provided by the import of '../models/invoice_model.dart' • lib/data/repositories/invoice_repository_impl.dart:5:8 • unnecessary_import
+warning • Unused import: 'package:amarpay/domain/entities/activity_entity.dart' • lib/logic/activity/activity_bloc.dart:3:8 • unused_import
+warning • Unused import: '../../domain/entities/activity_entity.dart' • lib/logic/activity/activity_event.dart:2:8 • unused_import
+warning • Unused import: 'package:amarpay/domain/entities/activity_entity.dart' • lib/logic/automation/automation_bloc.dart:5:8 • unused_import
+warning • Unused import: 'package:amarpay/domain/entities/sms_log_entity.dart' • lib/logic/automation/automation_bloc.dart:6:8 • unused_import
+warning • Unused import: '../../domain/entities/sms_log_entity.dart' • lib/logic/automation/automation_event.dart:2:8 • unused_import
+warning • Unused import: '../../domain/entities/payment_link_entity.dart' • lib/logic/checkout/checkout_event.dart:3:8 • unused_import
+warning • Unused import: '../../domain/entities/api_key_entity.dart' • lib/logic/developer/developer_event.dart:2:8 • unused_import
+warning • Unused import: 'dart:typed_data' • lib/logic/gateway/gateway_bloc.dart:1:8 • unused_import
+warning • Unused import: 'package:flutter/material.dart' • lib/logic/payment/payment_bloc.dart:1:8 • unused_import
+warning • Unused import: '../../domain/entities/report_entities.dart' • lib/logic/report/report_event.dart:2:8 • unused_import
+warning • Unused import: 'package:amarpay/domain/entities/brand_entity.dart' • lib/logic/settings/settings_bloc.dart:4:8 • unused_import
+warning • Unused import: 'package:amarpay/domain/entities/activity_entity.dart' • lib/logic/settings/settings_bloc.dart:6:8 • unused_import
+   info • Unnecessary use of multiple underscores • lib/presentation/pages/activity_logs_page.dart:53:39 • unnecessary_underscores
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/presentation/pages/activity_logs_page.dart:114:42 • deprecated_member_use
+warning • Unused import: 'dart:typed_data' • lib/presentation/pages/add_gateway_page.dart:1:8 • unused_import
+   info • 'value' is deprecated and shouldn't be used. Use initialValue instead. This will set the initial value for the form field. This feature was deprecated after v3.33.0-1.0.pre • lib/presentation/pages/brand_settings_page.dart:207:13 • deprecated_member_use
+   info • Don't use 'BuildContext's across async gaps • lib/presentation/pages/brand_settings_page.dart:278:7 • use_build_context_synchronously
+   info • Don't use 'BuildContext's across async gaps • lib/presentation/pages/create_invoice_page.dart:210:15 • use_build_context_synchronously
+   info • 'value' is deprecated and shouldn't be used. Use initialValue instead. This will set the initial value for the form field. This feature was deprecated after v3.33.0-1.0.pre • lib/presentation/pages/create_invoice_page.dart:222:7 • deprecated_member_use
+   info • 'value' is deprecated and shouldn't be used. Use initialValue instead. This will set the initial value for the form field. This feature was deprecated after v3.33.0-1.0.pre • lib/presentation/pages/create_invoice_page.dart:238:7 • deprecated_member_use
+   info • 'MaterialStateProperty' is deprecated and shouldn't be used. Use WidgetStateProperty instead. Moved to the Widgets layer to make code available outside of Material. This feature was deprecated after v3.19.0-0.3.pre • lib/presentation/pages/customer_list_page.dart:145:24 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/presentation/pages/customer_list_page.dart:164:52 • deprecated_member_use
+   info • Unnecessary use of multiple underscores • lib/presentation/pages/customer_list_page.dart:218:33 • unnecessary_underscores
+   info • Unnecessary use of multiple underscores • lib/presentation/pages/customer_list_page.dart:242:33 • unnecessary_underscores
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/presentation/pages/developer_settings_page.dart:96:28 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/presentation/pages/developer_settings_page.dart:97:28 • deprecated_member_use
+   info • 'activeColor' is deprecated and shouldn't be used. Use activeThumbColor instead. This feature was deprecated after v3.31.0-2.0.pre • lib/presentation/pages/developer_settings_page.dart:129:13 • deprecated_member_use
+   info • 'MaterialStateProperty' is deprecated and shouldn't be used. Use WidgetStateProperty instead. Moved to the Widgets layer to make code available outside of Material. This feature was deprecated after v3.19.0-0.3.pre • lib/presentation/pages/gateway_list_page.dart:90:24 • deprecated_member_use
+   info • 'activeColor' is deprecated and shouldn't be used. Use activeThumbColor instead. This feature was deprecated after v3.31.0-2.0.pre • lib/presentation/pages/gateway_list_page.dart:139:17 • deprecated_member_use
+   info • 'MaterialStateProperty' is deprecated and shouldn't be used. Use WidgetStateProperty instead. Moved to the Widgets layer to make code available outside of Material. This feature was deprecated after v3.19.0-0.3.pre • lib/presentation/pages/invoice_list_page.dart:141:24 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/presentation/pages/invoice_list_page.dart:209:22 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/presentation/pages/invoice_list_page.dart:211:41 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/presentation/pages/login_page.dart:32:37 • deprecated_member_use
+   info • 'MaterialStateProperty' is deprecated and shouldn't be used. Use WidgetStateProperty instead. Moved to the Widgets layer to make code available outside of Material. This feature was deprecated after v3.19.0-0.3.pre • lib/presentation/pages/payment_link_list_page.dart:115:24 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/presentation/pages/payment_link_list_page.dart:178:28 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/presentation/pages/payment_link_list_page.dart:179:26 • deprecated_member_use
+   info • Unnecessary use of multiple underscores • lib/presentation/pages/payment_link_list_page.dart:246:33 • unnecessary_underscores
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/presentation/pages/public_checkout_page.dart:65:45 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/presentation/pages/register_page.dart:33:37 • deprecated_member_use
+warning • Unused import: 'package:fl_chart/fl_chart.dart' • lib/presentation/pages/reports_page.dart:3:8 • unused_import
+   info • Don't use 'BuildContext's across async gaps • lib/presentation/pages/reports_page.dart:95:15 • use_build_context_synchronously
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/presentation/pages/sms_logs_page.dart:76:41 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/presentation/pages/sms_logs_page.dart:95:33 • deprecated_member_use
+   info • Unnecessary use of multiple underscores • lib/presentation/pages/sms_logs_page.dart:118:35 • unnecessary_underscores
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/presentation/pages/sms_logs_page.dart:140:31 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/presentation/pages/sms_logs_page.dart:141:32 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/presentation/pages/sms_logs_page.dart:205:34 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/presentation/pages/sms_logs_page.dart:206:33 • deprecated_member_use
+   info • Statements in an if should be enclosed in a block • lib/presentation/widgets/customer_form_drawer.dart:190:11 • curly_braces_in_flow_control_structures
+   info • 'value' is deprecated and shouldn't be used. Use initialValue instead. This will set the initial value for the form field. This feature was deprecated after v3.33.0-1.0.pre • lib/presentation/widgets/customer_form_drawer.dart:202:7 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/presentation/widgets/customer_insights_drawer.dart:94:40 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/presentation/widgets/customer_insights_drawer.dart:127:39 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/presentation/widgets/customer_insights_drawer.dart:180:22 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/presentation/widgets/customer_insights_drawer.dart:182:41 • deprecated_member_use
+warning • The declaration 'minWidth' isn't referenced • lib/presentation/widgets/customer_insights_drawer.dart:229:14 • unused_element
+   info • Unnecessary use of 'toList' in a spread • lib/presentation/widgets/gateway_config_form.dart:151:16 • unnecessary_to_list_in_spreads
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/presentation/widgets/latest_payments_table.dart:19:33 • deprecated_member_use
+   info • 'MaterialStateProperty' is deprecated and shouldn't be used. Use WidgetStateProperty instead. Moved to the Widgets layer to make code available outside of Material. This feature was deprecated after v3.19.0-0.3.pre • lib/presentation/widgets/latest_payments_table.dart:41:32 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/presentation/widgets/latest_payments_table.dart:92:22 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/presentation/widgets/main_layout.dart:211:39 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/presentation/widgets/metric_card_grid.dart:64:41 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/presentation/widgets/payment_chart.dart:18:33 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/presentation/widgets/payment_chart.dart:44:40 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/presentation/widgets/payment_chart.dart:98:54 • deprecated_member_use
+   info • 'value' is deprecated and shouldn't be used. Use initialValue instead. This will set the initial value for the form field. This feature was deprecated after v3.33.0-1.0.pre • lib/presentation/widgets/payment_link_form_drawer.dart:74:23 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/presentation/widgets/revenue_chart.dart:109:32 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/presentation/widgets/stat_card.dart:26:33 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/presentation/widgets/stat_card.dart:37:32 • deprecated_member_use
+warning • Unused import: 'dart:math' • lib/presentation/widgets/success_gauge.dart:5:8 • unused_import
+   info • Statements in an if should be enclosed in a block • lib/presentation/widgets/transaction_detail_drawer.dart:169:7 • curly_braces_in_flow_control_structures
+   info • 'MaterialStateProperty' is deprecated and shouldn't be used. Use WidgetStateProperty instead. Moved to the Widgets layer to make code available outside of Material. This feature was deprecated after v3.19.0-0.3.pre • lib/presentation/widgets/transaction_table.dart:36:30 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/presentation/widgets/transaction_table.dart:124:22 • deprecated_member_use
+
+74 issues found. (ran in 2.2s)

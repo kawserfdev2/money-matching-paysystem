@@ -1,6 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:amarpay/domain/repositories/settings_repository.dart';
-import 'package:amarpay/domain/repositories/activity_repository.dart';
+import 'package:amarpay/domain/repositories/settings_repository.dart'; // REQUIRED
+import 'package:amarpay/domain/repositories/activity_repository.dart'; // REQUIRED
 import 'package:amarpay/domain/entities/brand_entity.dart';
 import 'package:amarpay/data/models/brand_model.dart';
 import 'package:amarpay/domain/entities/activity_entity.dart';
