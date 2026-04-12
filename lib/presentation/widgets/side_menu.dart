@@ -3,6 +3,8 @@ import 'package:go_router/go_router.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../logic/settings/settings_bloc.dart';
 import '../../logic/settings/settings_state.dart';
+import '../../logic/auth/auth_bloc.dart';
+import '../../logic/auth/auth_event.dart';
 
 class SideMenu extends StatelessWidget {
   const SideMenu({super.key});
@@ -99,8 +101,64 @@ class SideMenu extends StatelessWidget {
                   '/settings',
                   currentLocation == '/settings',
                 ),
+                const SizedBox(height: 16),
+                _buildLogoutItem(context),
               ],
             ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildLogoutItem(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    return Container(
+      margin: const EdgeInsets.only(bottom: 16),
+      decoration: BoxDecoration(
+        color: Colors.red.withValues(alpha: 0.05),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: ListTile(
+        onTap: () => _showLogoutDialog(context),
+        leading: const Icon(
+          Icons.logout,
+          color: Colors.red,
+          size: 22,
+        ),
+        title: const Text(
+          "Logout",
+          style: TextStyle(
+            color: Colors.red,
+            fontSize: 14,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _showLogoutDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (dContext) => AlertDialog(
+        title: const Text("Logout"),
+        content: const Text("Are you sure you want to sign out?"),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(dContext),
+            child: const Text("Cancel"),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.pop(dContext);
+              context.read<AuthBloc>().add(LogoutRequested());
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.red,
+              foregroundColor: Colors.white,
+            ),
+            child: const Text("Logout"),
           ),
         ],
       ),
