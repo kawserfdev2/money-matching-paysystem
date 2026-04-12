@@ -18,6 +18,7 @@ class DashboardPage extends StatelessWidget {
       create: (context) => getIt<DashboardBloc>()..add(FetchDashboardData()),
       child: Scaffold(
         backgroundColor: const Color(0xFFF8FAFC),
+
         body: BlocBuilder<DashboardBloc, DashboardState>(
           builder: (context, state) {
             if (state is DashboardLoading) {

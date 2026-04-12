@@ -42,6 +42,13 @@ dependencies:
   fl_chart: ^1.2.0
   intl: ^0.20.2
   flutter_dotenv: ^6.0.0
+  data_table_2: ^2.7.2
+  file_picker: ^11.0.2
+  rxdart: ^0.28.0
+  pdf: ^3.10.8
+  printing: ^5.11.1
+  qr_flutter: ^4.1.0
+  csv: ^6.0.0
 
 dev_dependencies:
   flutter_test:
@@ -68,6 +75,7 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - .env
+    - assets/logo.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

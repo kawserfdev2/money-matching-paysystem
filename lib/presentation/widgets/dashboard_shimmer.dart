@@ -7,28 +7,30 @@ class DashboardShimmer extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(24.0),
-      child: Column(
-        children: [
-          // Stat Cards Grid Skeleton
-          GridView.builder(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-              maxCrossAxisExtent: 300,
-              mainAxisExtent: 100,
-              crossAxisSpacing: 20,
-              mainAxisSpacing: 20,
+      child: SingleChildScrollView(
+        child: Column(
+          children: [
+            // Stat Cards Grid Skeleton
+            GridView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+                maxCrossAxisExtent: 300,
+                mainAxisExtent: 100,
+                crossAxisSpacing: 20,
+                mainAxisSpacing: 20,
+              ),
+              itemCount: 4,
+              itemBuilder: (context, index) => _ShimmerBox(),
             ),
-            itemCount: 4,
-            itemBuilder: (context, index) => _ShimmerBox(),
-          ),
-          const SizedBox(height: 32),
-          // Chart Skeleton
-          _ShimmerBox(height: 300),
-          const SizedBox(height: 32),
-          // Table Skeleton
-          _ShimmerBox(height: 400),
-        ],
+            const SizedBox(height: 32),
+            // Chart Skeleton
+            _ShimmerBox(height: 300),
+            const SizedBox(height: 32),
+            // Table Skeleton
+            _ShimmerBox(height: 400),
+          ],
+        ),
       ),
     );
   }

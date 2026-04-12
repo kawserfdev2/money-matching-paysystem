@@ -1,74 +1,197 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import '../../logic/auth/auth_bloc.dart';
-import '../../logic/auth/auth_event.dart';
-import '../../logic/auth/auth_state.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../logic/settings/settings_bloc.dart';
+import '../../logic/settings/settings_event.dart';
+import '../../logic/settings/settings_state.dart';
+import '../../core/injection.dart';
 
 class MainLayout extends StatelessWidget {
   final Widget child;
-
   const MainLayout({super.key, required this.child});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Row(
-        children: [
-          _buildSidebar(context),
-          Expanded(
-            child: Column(
-              children: [
-                _buildHeader(context),
-                Expanded(child: child),
-              ],
-            ),
+    final String currentLocation = GoRouterState.of(context).matchedLocation;
+
+    return BlocProvider(
+      create: (context) => getIt<SettingsBloc>()..add(LoadSettings()),
+      child: Scaffold(
+        body: SelectionArea(
+          child: Row(
+            children: [
+              // Sidebar
+              Container(
+                width: 260,
+                color: const Color.fromARGB(255, 255, 255, 255),
+                child: Column(
+                  children: [
+                    BlocBuilder<SettingsBloc, SettingsState>(
+                      builder: (context, state) {
+                        String siteName = "AmarPay";
+                        String? logoUrl;
+
+                        if (state is SettingsLoaded) {
+                          siteName = state.brand.name;
+                          logoUrl = state.brand.logoUrl;
+                        }
+
+                        return Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 24,
+                            vertical: 32,
+                          ),
+                          child: Row(
+                            children: [
+                              if (logoUrl != null &&
+                                  !logoUrl.contains("placehold"))
+                                Image.network(logoUrl, height: 32)
+                              else
+                                Image.asset('assets/logo.png', height: 32),
+                              const SizedBox(width: 12),
+                              Expanded(
+                                child: Text(
+                                  siteName,
+                                  style: const TextStyle(
+                                    color: Colors.black87,
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                    ),
+                    Expanded(
+                      child: ListView(
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        children: [
+                          _buildNavItem(
+                            context,
+                            "Dashboard",
+                            Icons.dashboard_outlined,
+                            '/',
+                            currentLocation == '/',
+                          ),
+                          _buildNavItem(
+                            context,
+                            "Payments",
+                            Icons.payments_outlined,
+                            '/payments',
+                            currentLocation == '/payments',
+                          ),
+                          _buildNavItem(
+                            context,
+                            "Customers",
+                            Icons.people_outline,
+                            '/customers',
+                            currentLocation == '/customers',
+                          ),
+                          _buildNavItem(
+                            context,
+                            "Gateways",
+                            Icons.account_balance_outlined,
+                            '/gateways',
+                            currentLocation.startsWith('/gateways'),
+                          ),
+                          _buildNavItem(
+                            context,
+                            "Invoices",
+                            Icons.receipt_long_outlined,
+                            '/invoices',
+                            currentLocation.startsWith('/invoices'),
+                          ),
+                          _buildNavItem(
+                            context,
+                            "Payment Links",
+                            Icons.link,
+                            '/payment-links',
+                            currentLocation == '/payment-links',
+                          ),
+                          _buildNavItem(
+                            context,
+                            "Reports",
+                            Icons.bar_chart_outlined,
+                            '/reports',
+                            currentLocation == '/reports',
+                          ),
+                          const Divider(color: Colors.white24, height: 32),
+                          _buildNavItem(
+                            context,
+                            "SMS Automation",
+                            Icons.phonelink_ring_outlined,
+                            '/sms-logs',
+                            currentLocation == '/sms-logs',
+                          ),
+                          _buildNavItem(
+                            context,
+                            "Developer",
+                            Icons.code_outlined,
+                            '/developer',
+                            currentLocation == '/developer',
+                          ),
+                          _buildNavItem(
+                            context,
+                            "Audit Trail",
+                            Icons.history,
+                            '/activities',
+                            currentLocation == '/activities',
+                          ),
+                          _buildNavItem(
+                            context,
+                            "Settings",
+                            Icons.settings_outlined,
+                            '/settings',
+                            currentLocation == '/settings',
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              // Content
+              Expanded(
+                child: Column(
+                  children: [
+                    _buildHeader(context),
+                    Expanded(child: child),
+                  ],
+                ),
+              ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }
 
-  Widget _buildSidebar(BuildContext context) {
+  Widget _buildHeader(BuildContext context) {
     return Container(
-      width: 250,
-      color: const Color(0xFF1E293B), // Slate 900
-      child: Column(
+      height: 70,
+      padding: const EdgeInsets.symmetric(horizontal: 24),
+      decoration: const BoxDecoration(
+        color: Colors.white,
+        border: Border(bottom: BorderSide(color: Color(0xFFEEEEEE))),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.end,
         children: [
-          const SizedBox(height: 32),
-          const Text(
-            "AmarPay Admin",
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
+          const Icon(Icons.notifications_none, color: Colors.grey),
+          const SizedBox(width: 20),
+          Container(
+            width: 35,
+            height: 35,
+            decoration: const BoxDecoration(
+              color: Colors.blue,
+              shape: BoxShape.circle,
             ),
-          ),
-          const SizedBox(height: 32),
-          _buildNavItem(context, "Dashboard", Icons.dashboard_outlined, '/'),
-          _buildNavItem(
-            context,
-            "Payments",
-            Icons.payment_outlined,
-            '/payments',
-          ),
-          _buildNavItem(
-            context,
-            "Gateways",
-            Icons.account_balance_outlined,
-            '/gateways',
-          ),
-          _buildNavItem(
-            context,
-            "Customers",
-            Icons.people_outline,
-            '/customers',
-          ),
-          _buildNavItem(
-            context,
-            "Settings",
-            Icons.settings_outlined,
-            '/settings',
+            child: const Center(
+              child: Text("A", style: TextStyle(color: Colors.white)),
+            ),
           ),
         ],
       ),
@@ -80,56 +203,29 @@ class MainLayout extends StatelessWidget {
     String title,
     IconData icon,
     String route,
+    bool isActive,
   ) {
-    final bool isSelected = GoRouterState.of(context).matchedLocation == route;
-    return ListTile(
-      leading: Icon(icon, color: isSelected ? Colors.blue : Colors.grey),
-      title: Text(
-        title,
-        style: TextStyle(color: isSelected ? Colors.white : Colors.grey),
-      ),
-      onTap: () => context.go(route),
-      selected: isSelected,
-      selectedTileColor: Colors.white.withOpacity(0.05),
-    );
-  }
-
-  Widget _buildHeader(BuildContext context) {
     return Container(
-      height: 64,
-      padding: const EdgeInsets.symmetric(horizontal: 24),
+      margin: const EdgeInsets.only(bottom: 4),
       decoration: BoxDecoration(
-        color: Colors.white,
-        border: Border(bottom: BorderSide(color: Colors.grey.shade200)),
+        color: isActive ? Colors.blue.withOpacity(0.1) : Colors.transparent,
+        borderRadius: BorderRadius.circular(8),
       ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          const Text(
-            "Welcome back",
-            style: TextStyle(fontWeight: FontWeight.w500),
+      child: ListTile(
+        onTap: () => context.go(route),
+        leading: Icon(
+          icon,
+          color: isActive ? Colors.blue : Colors.grey,
+          size: 22,
+        ),
+        title: Text(
+          title,
+          style: TextStyle(
+            color: isActive ? Colors.blue : Colors.black54,
+            fontSize: 14,
+            fontWeight: isActive ? FontWeight.bold : FontWeight.normal,
           ),
-          BlocBuilder<AuthBloc, AuthState>(
-            builder: (context, state) {
-              String email = "";
-              if (state is Authenticated) {
-                email = state.email;
-              }
-              return Row(
-                children: [
-                  Text(email, style: const TextStyle(color: Colors.grey)),
-                  const SizedBox(width: 16),
-                  IconButton(
-                    icon: const Icon(Icons.logout, color: Colors.grey),
-                    onPressed: () {
-                      context.read<AuthBloc>().add(LogoutRequested());
-                    },
-                  ),
-                ],
-              );
-            },
-          ),
-        ],
+        ),
       ),
     );
   }
