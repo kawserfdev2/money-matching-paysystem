@@ -23,3 +23,10 @@ class RegisterRequested extends AuthEvent {
 }
 
 class LogoutRequested extends AuthEvent {}
+
+class StartImpersonation extends AuthEvent {
+  final String brandId;
+  StartImpersonation(this.brandId);
+}
+
+class StopImpersonation extends AuthEvent {}

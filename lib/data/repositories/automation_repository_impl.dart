@@ -1,5 +1,6 @@
 import 'package:amarpay/domain/repositories/automation_repository.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import '../../core/utils/supabase_helper.dart';
 import '../../domain/entities/sms_log_entity.dart';
 import '../models/sms_log_model.dart';
 
@@ -8,9 +9,7 @@ class AutomationRepositoryImpl implements AutomationRepository {
 
   @override
   Stream<List<SmsLogEntity>> watchSmsLogs() {
-    return _supabase
-        .from('sms_logs')
-        .stream(primaryKey: ['id'])
+    return SupabaseHelper.streamFiltered('sms_logs', ['id'])
         .order('created_at', ascending: false)
         .map((data) => data.map((json) => SmsLogModel.fromJson(json)).toList());
   }
@@ -19,13 +18,17 @@ class AutomationRepositoryImpl implements AutomationRepository {
   Future<void> syncSmsManually(String body, String sender) async {
     final parsed = await parseSms(body);
 
-    await _supabase.from('sms_logs').insert({
-      'sender': sender,
-      'body': body,
-      'amount': parsed['amount'],
-      'trx_id': parsed['trx_id'],
-      'status': 'pending',
-    });
+    await _supabase
+        .from('sms_logs')
+        .insert(
+          SupabaseHelper.injectBrandId({
+            'sender': sender,
+            'body': body,
+            'amount': parsed['amount'],
+            'trx_id': parsed['trx_id'],
+            'status': 'pending',
+          }),
+        );
   }
 
   @override

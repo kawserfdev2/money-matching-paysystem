@@ -1,5 +1,6 @@
 import 'dart:math';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import '../../core/utils/supabase_helper.dart';
 import '../../domain/entities/payment_link_entity.dart';
 import '../../domain/repositories/payment_link_repository.dart';
 import '../models/payment_link_model.dart';
@@ -9,10 +10,9 @@ class PaymentLinkRepositoryImpl implements PaymentLinkRepository {
 
   @override
   Future<List<PaymentLinkEntity>> getPaymentLinks() async {
-    final response = await _supabase
-        .from('payment_links')
-        .select()
-        .order('created_at', ascending: false);
+    final response = await SupabaseHelper.queryFiltered(
+      'payment_links',
+    ).order('created_at', ascending: false);
 
     return (response as List)
         .map((json) => PaymentLinkModel.fromJson(json))
@@ -22,11 +22,9 @@ class PaymentLinkRepositoryImpl implements PaymentLinkRepository {
   @override
   Future<PaymentLinkEntity?> getPaymentLinkBySlug(String slug) async {
     try {
-      final response = await _supabase
-          .from('payment_links')
-          .select()
-          .eq('slug', slug)
-          .maybeSingle();
+      final response = await SupabaseHelper.queryFiltered(
+        'payment_links',
+      ).eq('slug', slug).maybeSingle();
 
       if (response == null) return null;
       return PaymentLinkModel.fromJson(response);
@@ -52,7 +50,9 @@ class PaymentLinkRepositoryImpl implements PaymentLinkRepository {
       createdAt: DateTime.now(),
     );
 
-    await _supabase.from('payment_links').insert(model.toJson());
+    await _supabase
+        .from('payment_links')
+        .insert(SupabaseHelper.injectBrandId(model.toJson()));
   }
 
   @override
@@ -80,11 +80,10 @@ class PaymentLinkRepositoryImpl implements PaymentLinkRepository {
         ),
       );
 
-      final existing = await _supabase
-          .from('payment_links')
-          .select('slug')
-          .eq('slug', slug)
-          .maybeSingle();
+      final existing = await SupabaseHelper.queryFiltered(
+        'payment_links',
+        'slug',
+      ).eq('slug', slug).maybeSingle();
 
       if (existing == null) return slug;
     }

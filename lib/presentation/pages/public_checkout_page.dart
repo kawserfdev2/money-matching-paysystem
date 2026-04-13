@@ -3,6 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../logic/checkout/checkout_bloc.dart';
 import '../../logic/checkout/checkout_event.dart';
 import '../../logic/checkout/checkout_state.dart';
+import '../../logic/superadmin/global_settings/global_settings_bloc.dart';
+import '../../logic/superadmin/global_settings/global_settings_event.dart';
+import '../../logic/superadmin/global_settings/global_settings_state.dart';
 import '../../core/injection.dart';
 
 class PublicCheckoutPage extends StatefulWidget {
@@ -18,15 +21,26 @@ class _PublicCheckoutPageState extends State<PublicCheckoutPage> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _trxController = TextEditingController();
+  String? _selectedGatewayId;
 
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    return BlocProvider(
-      create: (context) =>
-          getIt<CheckoutBloc>()..add(LoadCheckoutDetails(widget.slug)),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) =>
+              getIt<CheckoutBloc>()..add(LoadCheckoutDetails(widget.slug)),
+        ),
+        BlocProvider(
+          create: (context) =>
+              getIt<GlobalSettingsBloc>()..add(LoadGlobalGateways()),
+        ),
+      ],
       child: Scaffold(
-        backgroundColor: colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
+        backgroundColor: colorScheme.surfaceContainerHighest.withValues(
+          alpha: 0.3,
+        ),
         body: BlocConsumer<CheckoutBloc, CheckoutState>(
           listener: (context, state) {
             if (state is CheckoutSuccess) {
@@ -138,6 +152,101 @@ class _PublicCheckoutPageState extends State<PublicCheckoutPage> {
                           ),
                           const SizedBox(height: 24),
                         ],
+                        const Text(
+                          'Select Payment Method',
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        const SizedBox(height: 12),
+                        BlocBuilder<GlobalSettingsBloc, GlobalSettingsState>(
+                          builder: (context, globalState) {
+                            if (globalState is GlobalGatewaysLoaded) {
+                              return Column(
+                                children: globalState.gateways.map((gw) {
+                                  final isSelected =
+                                      _selectedGatewayId == gw.id;
+                                  return Opacity(
+                                    opacity: gw.isActive ? 1.0 : 0.5,
+                                    child: AnimatedContainer(
+                                      duration: const Duration(
+                                        milliseconds: 200,
+                                      ),
+                                      margin: const EdgeInsets.only(bottom: 8),
+                                      decoration: BoxDecoration(
+                                        color: isSelected
+                                            ? colorScheme.primaryContainer
+                                                  .withOpacity(0.1)
+                                            : null,
+                                        border: Border.all(
+                                          color: isSelected
+                                              ? colorScheme.primary
+                                              : colorScheme.outlineVariant,
+                                          width: isSelected ? 2 : 1,
+                                        ),
+                                        borderRadius: BorderRadius.circular(12),
+                                      ),
+                                      child: ListTile(
+                                        onTap: gw.isActive
+                                            ? () => setState(
+                                                () =>
+                                                    _selectedGatewayId = gw.id,
+                                              )
+                                            : null,
+                                        leading: Image.network(
+                                          gw.logoUrl,
+                                          width: 40,
+                                          height: 40,
+                                          errorBuilder: (_, __, ___) =>
+                                              const Icon(Icons.payment),
+                                        ),
+                                        title: Text(
+                                          gw.providerName,
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            decoration: gw.isActive
+                                                ? null
+                                                : TextDecoration.lineThrough,
+                                          ),
+                                        ),
+                                        subtitle: gw.isActive
+                                            ? const Text(
+                                                'Available',
+                                                style: TextStyle(
+                                                  color: Colors.green,
+                                                  fontSize: 12,
+                                                ),
+                                              )
+                                            : Text(
+                                                gw.maintenanceMessage ??
+                                                    'Currently disabled by platform administrator.',
+                                                style: const TextStyle(
+                                                  color: Colors.red,
+                                                  fontSize: 12,
+                                                ),
+                                              ),
+                                        trailing: isSelected
+                                            ? Icon(
+                                                Icons.radio_button_checked,
+                                                color: colorScheme.primary,
+                                              )
+                                            : (gw.isActive
+                                                  ? const Icon(
+                                                      Icons
+                                                          .radio_button_unchecked,
+                                                    )
+                                                  : const Icon(
+                                                      Icons.block,
+                                                      color: Colors.red,
+                                                    )),
+                                      ),
+                                    ),
+                                  );
+                                }).toList(),
+                              );
+                            }
+                            return const CircularProgressIndicator();
+                          },
+                        ),
+                        const SizedBox(height: 32),
                         SizedBox(
                           width: double.infinity,
                           height: 50,
@@ -148,6 +257,16 @@ class _PublicCheckoutPageState extends State<PublicCheckoutPage> {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(
                                     content: Text("Invalid Testing TrxID"),
+                                  ),
+                                );
+                                return;
+                              }
+                              if (_selectedGatewayId == null) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text(
+                                      "Please select a payment method",
+                                    ),
                                   ),
                                 );
                                 return;

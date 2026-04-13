@@ -1,5 +1,6 @@
 import 'dart:typed_data';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import '../../core/utils/supabase_helper.dart';
 import '../../domain/entities/gateway_entity.dart';
 import '../../domain/repositories/gateway_repository.dart';
 import '../models/gateway_model.dart';
@@ -9,10 +10,9 @@ class GatewayRepositoryImpl implements GatewayRepository {
 
   @override
   Future<List<GatewayEntity>> getGateways() async {
-    final response = await _supabase
-        .from('gateways')
-        .select()
-        .order('name', ascending: true);
+    final response = await SupabaseHelper.queryFiltered(
+      'gateways',
+    ).order('name', ascending: true);
 
     return (response as List)
         .map((json) => GatewayModel.fromJson(json))
@@ -35,7 +35,9 @@ class GatewayRepositoryImpl implements GatewayRepository {
     );
 
     if (gateway.id.isEmpty) {
-      await _supabase.from('gateways').insert(model.toJson());
+      await _supabase
+          .from('gateways')
+          .insert(SupabaseHelper.injectBrandId(model.toJson()));
     } else {
       await _supabase
           .from('gateways')

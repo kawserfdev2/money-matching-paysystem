@@ -11,9 +11,13 @@ import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:amarpay/logic/theme/theme_bloc.dart';
 import 'package:amarpay/logic/theme/theme_state.dart';
+import 'package:amarpay/core/utils/bloc_observer.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Set Global Bloc Observer for Action Logging
+  Bloc.observer = SimpleBlocObserver();
 
   await dotenv.load(fileName: ".env");
   await Supabase.initialize(
@@ -67,6 +71,7 @@ class MyApp extends StatelessWidget {
             themeMode: themeState.themeMode,
             routerConfig: getIt<AppRouter>().router,
             debugShowCheckedModeBanner: false,
+            builder: (context, child) => child!,
           );
         },
       ),

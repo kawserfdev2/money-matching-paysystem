@@ -20,25 +20,27 @@ class SuperadminLayout extends StatelessWidget {
     if (location.contains('settings')) title = 'Global Settings';
     if (location.contains('logs')) title = 'System Logs';
 
-    return Scaffold(
-      drawer: !isDesktop ? const Drawer(child: SuperadminSidebar()) : null,
-      body: Row(
-        children: [
-          if (isDesktop) const SuperadminSidebar(),
-          Expanded(
-            child: Column(
-              children: [
-                SuperadminHeader(title: title),
-                Expanded(
-                  child: Container(
-                    color: const Color(0xFFF8FAFC), // Light grey background
-                    child: child,
+    return SelectionArea(
+      child: Scaffold(
+        drawer: !isDesktop ? const Drawer(child: SuperadminSidebar()) : null,
+        body: Row(
+          children: [
+            if (isDesktop) const SuperadminSidebar(),
+            Expanded(
+              child: Column(
+                children: [
+                  SuperadminHeader(title: title),
+                  Expanded(
+                    child: Container(
+                      color: const Color(0xFFF8FAFC), // Light grey background
+                      child: child,
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

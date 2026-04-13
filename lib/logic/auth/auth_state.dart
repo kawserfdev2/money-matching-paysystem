@@ -8,7 +8,14 @@ class AuthLoading extends AuthState {}
 
 class Authenticated extends AuthState {
   final UserModel user;
-  Authenticated(this.user);
+  final bool isImpersonating;
+  final String? impersonatedBrandId;
+
+  Authenticated(
+    this.user, {
+    this.isImpersonating = false,
+    this.impersonatedBrandId,
+  });
 }
 
 class Unauthenticated extends AuthState {}

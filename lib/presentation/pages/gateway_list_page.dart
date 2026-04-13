@@ -7,6 +7,10 @@ import '../../logic/gateway/gateway_bloc.dart';
 import '../../logic/gateway/gateway_event.dart';
 import '../../logic/gateway/gateway_state.dart';
 import '../../domain/entities/gateway_entity.dart';
+import '../../logic/superadmin/global_settings/global_settings_bloc.dart';
+import '../../logic/superadmin/global_settings/global_settings_event.dart'
+    hide ToggleGatewayStatus;
+import '../../logic/superadmin/global_settings/global_settings_state.dart';
 import '../widgets/responsive.dart';
 
 class GatewayListPage extends StatelessWidget {
@@ -14,8 +18,16 @@ class GatewayListPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => getIt<GatewayBloc>()..add(LoadGateways()),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => getIt<GatewayBloc>()..add(LoadGateways()),
+        ),
+        BlocProvider(
+          create: (context) =>
+              getIt<GlobalSettingsBloc>()..add(LoadGlobalGateways()),
+        ),
+      ],
       child: Scaffold(
         body: Padding(
           padding: EdgeInsets.all(Responsive.isMobile(context) ? 16 : 24.0),
@@ -57,7 +69,9 @@ class GatewayListPage extends StatelessWidget {
                   decoration: BoxDecoration(
                     color: Theme.of(context).colorScheme.surface,
                     borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: Theme.of(context).colorScheme.outlineVariant),
+                    border: Border.all(
+                      color: Theme.of(context).colorScheme.outlineVariant,
+                    ),
                   ),
                   child: BlocBuilder<GatewayBloc, GatewayState>(
                     builder: (context, state) {
@@ -66,7 +80,18 @@ class GatewayListPage extends StatelessWidget {
                       }
 
                       if (state is GatewayLoaded) {
-                        return _buildTable(context, state.gateways);
+                        return BlocBuilder<
+                          GlobalSettingsBloc,
+                          GlobalSettingsState
+                        >(
+                          builder: (context, globalState) {
+                            return _buildTable(
+                              context,
+                              state.gateways,
+                              globalState,
+                            );
+                          },
+                        );
                       }
 
                       if (state is GatewayError) {
@@ -85,13 +110,19 @@ class GatewayListPage extends StatelessWidget {
     );
   }
 
-  Widget _buildTable(BuildContext context, List<GatewayEntity> gateways) {
+  Widget _buildTable(
+    BuildContext context,
+    List<GatewayEntity> gateways,
+    GlobalSettingsState globalState,
+  ) {
     return DataTable2(
       columnSpacing: 12,
       horizontalMargin: 12,
       minWidth: 600,
       headingRowColor: WidgetStateProperty.all(
-        Theme.of(context).colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
+        Theme.of(
+          context,
+        ).colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
       ),
       columns: const [
         DataColumn2(label: Text('Gateway'), size: ColumnSize.L),
@@ -107,10 +138,14 @@ class GatewayListPage extends StatelessWidget {
               Row(
                 children: [
                   CircleAvatar(
-                    backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+                    backgroundColor: Theme.of(
+                      context,
+                    ).colorScheme.primaryContainer,
                     child: Text(
                       gateway.name[0].toUpperCase(),
-                      style: TextStyle(color: Theme.of(context).colorScheme.onPrimaryContainer),
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.onPrimaryContainer,
+                      ),
                     ),
                   ),
                   const SizedBox(width: 12),
@@ -125,10 +160,31 @@ class GatewayListPage extends StatelessWidget {
               ),
             ),
             DataCell(
-              Text(
-                gateway.displayName,
-                overflow: TextOverflow.ellipsis,
-                maxLines: 1,
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    gateway.displayName,
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 1,
+                  ),
+                  if (globalState is GlobalGatewaysLoaded &&
+                      globalState.gateways.any(
+                        (g) =>
+                            g.providerName.toLowerCase() ==
+                                gateway.name.toLowerCase() &&
+                            !g.isActive,
+                      ))
+                    Text(
+                      'Globally Disabled by Admin',
+                      style: TextStyle(
+                        color: Colors.red,
+                        fontSize: 10,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                ],
               ),
             ),
             DataCell(

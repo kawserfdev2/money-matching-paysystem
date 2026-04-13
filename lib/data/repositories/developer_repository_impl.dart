@@ -1,4 +1,5 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
+import '../../core/utils/supabase_helper.dart';
 import '../../domain/entities/api_key_entity.dart';
 import '../../domain/repositories/developer_repository.dart';
 import '../models/api_key_model.dart';
@@ -10,9 +11,7 @@ class DeveloperRepositoryImpl implements DeveloperRepository {
   @override
   Future<ApiKeyEntity?> getApiKeys(String brandId) async {
     // We limit to 1 to avoid 'multiple rows' error if the user has somehow generated multiple
-    final response = await _supabase
-        .from('api_keys')
-        .select()
+    final response = await SupabaseHelper.queryFiltered('api_keys')
         .eq('brand_id', brandId)
         .order('created_at', ascending: false)
         .limit(1)
@@ -44,7 +43,7 @@ class DeveloperRepositoryImpl implements DeveloperRepository {
 
     final response = await _supabase
         .from('api_keys')
-        .insert(model.toJson())
+        .insert(SupabaseHelper.injectBrandId(model.toJson()))
         .select()
         .single();
 

@@ -1,4 +1,5 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
+import '../../core/utils/supabase_helper.dart';
 import '../../domain/entities/invoice_entity.dart';
 import '../../domain/repositories/invoice_repository.dart';
 import '../models/invoice_model.dart';
@@ -14,9 +15,10 @@ class InvoiceRepositoryImpl implements InvoiceRepository {
     String? status,
     String? searchQuery,
   }) async {
-    var query = _supabase
-        .from('invoices')
-        .select('*, customers(first_name, last_name)');
+    var query = SupabaseHelper.queryFiltered(
+      'invoices',
+      '*, customers(first_name, last_name)',
+    );
 
     if (status != null && status != 'All') {
       query = query.eq('status', status.toLowerCase());
@@ -40,11 +42,10 @@ class InvoiceRepositoryImpl implements InvoiceRepository {
 
   @override
   Future<InvoiceEntity> getInvoiceDetails(String id) async {
-    final response = await _supabase
-        .from('invoices')
-        .select('*, customers(*), invoice_items(*)')
-        .eq('id', id)
-        .single();
+    final response = await SupabaseHelper.queryFiltered(
+      'invoices',
+      '*, customers(*), invoice_items(*)',
+    ).eq('id', id).single();
 
     return InvoiceModel.fromJson(response);
   }
@@ -77,10 +78,12 @@ class InvoiceRepositoryImpl implements InvoiceRepository {
       ).toJson();
     }).toList();
 
-    // Use RPC for atomic update/insert
     await _supabase.rpc(
       'create_invoice',
-      params: {'invoice_data': invoiceModel.toJson(), 'items_data': itemsData},
+      params: {
+        'invoice_data': SupabaseHelper.injectBrandId(invoiceModel.toJson()),
+        'items_data': itemsData,
+      },
     );
   }
 
@@ -91,9 +94,7 @@ class InvoiceRepositoryImpl implements InvoiceRepository {
 
   @override
   Stream<List<InvoiceEntity>> watchInvoices() {
-    return _supabase
-        .from('invoices')
-        .stream(primaryKey: ['id'])
+    return SupabaseHelper.streamFiltered('invoices', ['id'])
         .order('created_at', ascending: false)
         .map(
           (data) => data.map((json) => InvoiceModel.fromJson(json)).toList(),

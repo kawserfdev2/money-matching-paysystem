@@ -1,4 +1,5 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
+import '../../core/utils/supabase_helper.dart';
 import '../../domain/entities/report_entities.dart';
 import '../../domain/repositories/report_repository.dart';
 
@@ -43,11 +44,13 @@ class ReportRepositoryImpl implements ReportRepository {
     DateTime end,
   ) async {
     // Fetch payments for the range
-    final response = await _supabase
-        .from('payments')
-        .select('created_at, customer_email, gateway, amount, currency, status')
-        .gte('created_at', start.toIso8601String())
-        .lte('created_at', end.toIso8601String());
+    final response =
+        await SupabaseHelper.queryFiltered(
+              'payments',
+              'created_at, customer_email, gateway, amount, currency, status',
+            )
+            .gte('created_at', start.toIso8601String())
+            .lte('created_at', end.toIso8601String());
 
     final List<List<dynamic>> rows = [];
     rows.add(['Date', 'Email', 'Gateway', 'Amount', 'Currency', 'Status']);

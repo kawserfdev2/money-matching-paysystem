@@ -25,10 +25,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../presentation/superadmin/superadmin_layout.dart';
 import '../../presentation/pages/superadmin/merchants_page.dart';
 import '../../presentation/pages/superadmin/pricing_page.dart';
-import '../../presentation/pages/superadmin/settings_page.dart';
 import '../../presentation/pages/superadmin/subscriptions_page.dart';
-import '../../presentation/pages/superadmin/syslogs_page.dart';
+import '../../presentation/pages/superadmin/system_logs_page.dart';
 import '../../presentation/pages/superadmin/dashboard_page.dart';
+import '../../presentation/pages/superadmin/global_settings_page.dart';
 
 class AppRouter {
   final AuthBloc authBloc;
@@ -62,20 +62,25 @@ class AppRouter {
 
       if (authState is Authenticated) {
         final role = authState.user.role;
+        final isImpersonating = authState.isImpersonating;
 
         // If logged in and trying to access login/register, send to appropriate dashboard
         if (loggingIn || registering) {
-          return role == 'superadmin' ? '/superadmin/dashboard' : '/';
+          return (role == 'superadmin' && !isImpersonating)
+              ? '/superadmin/dashboard'
+              : '/';
         }
 
-        // If hitting base path '/', redirect based on role
-        if (state.matchedLocation == '/') {
-          if (role == 'superadmin') return '/superadmin/dashboard';
-        }
-
-        // Protect superadmin routes
-        if (isSuperAdminRoute && role != 'superadmin') {
-          return '/';
+        if (isSuperAdminRoute) {
+          // Prevent regular users from accessing superadmin routes
+          if (role != 'superadmin') return '/';
+          // If superadmin is impersonating, they shouldn't be in the superadmin area
+          if (role == 'superadmin' && isImpersonating) return '/';
+        } else {
+          // If it's a merchant route, bounce non-impersonating superadmins out
+          if (role == 'superadmin' && !isImpersonating) {
+            return '/superadmin/dashboard';
+          }
         }
 
         return null;
@@ -114,6 +119,10 @@ class AppRouter {
           GoRoute(
             path: '/superadmin/subscriptions',
             builder: (context, state) => const SubscriptionsPage(),
+          ),
+          GoRoute(
+            path: '/superadmin/global-settings',
+            builder: (context, state) => const GlobalSettingsPage(),
           ),
           GoRoute(
             path: '/superadmin/settings',

@@ -1,4 +1,5 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
+import '../../core/utils/supabase_helper.dart';
 import '../../domain/entities/customer_entity.dart';
 import '../../domain/repositories/customer_repository.dart';
 import '../../domain/repositories/payment_repository.dart';
@@ -16,7 +17,7 @@ class CustomerRepositoryImpl implements CustomerRepository {
     String? country,
     PaymentDateRange? dateRange,
   }) async {
-    var query = _supabase.from('customers').select();
+    var query = SupabaseHelper.queryFiltered('customers');
 
     if (searchQuery != null && searchQuery.isNotEmpty) {
       query = query.or(
@@ -53,11 +54,10 @@ class CustomerRepositoryImpl implements CustomerRepository {
   @override
   Future<CustomerEntity> getCustomerInsights(String email) async {
     // Supabase relational query to get customer + their payments for stats
-    final response = await _supabase
-        .from('customers')
-        .select('*, payments(amount, status)')
-        .eq('email', email)
-        .single();
+    final response = await SupabaseHelper.queryFiltered(
+      'customers',
+      '*, payments(amount, status)',
+    ).eq('email', email).single();
 
     return CustomerModel.fromJson(response);
   }
@@ -81,7 +81,9 @@ class CustomerRepositoryImpl implements CustomerRepository {
     );
 
     if (customer.id.isEmpty || customer.id == 'new') {
-      await _supabase.from('customers').insert(model.toJson());
+      await _supabase
+          .from('customers')
+          .insert(SupabaseHelper.injectBrandId(model.toJson()));
     } else {
       await _supabase
           .from('customers')
@@ -97,9 +99,7 @@ class CustomerRepositoryImpl implements CustomerRepository {
 
   @override
   Stream<List<CustomerEntity>> watchCustomers() {
-    return _supabase
-        .from('customers')
-        .stream(primaryKey: ['id'])
+    return SupabaseHelper.streamFiltered('customers', ['id'])
         .order('created_at', ascending: false)
         .map(
           (data) => data.map((json) => CustomerModel.fromJson(json)).toList(),

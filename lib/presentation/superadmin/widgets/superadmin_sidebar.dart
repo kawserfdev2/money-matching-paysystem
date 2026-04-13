@@ -47,8 +47,8 @@ class SuperadminSidebar extends StatelessWidget {
                 _MenuItem(
                   title: 'Global Settings',
                   icon: Icons.settings_applications_outlined,
-                  route: '/superadmin/settings',
-                  isActive: currentRoute == '/superadmin/settings',
+                  route: '/superadmin/global-settings',
+                  isActive: currentRoute == '/superadmin/global-settings',
                 ),
                 _MenuItem(
                   title: 'System Logs',
@@ -113,7 +113,10 @@ class _MenuItem extends StatelessWidget {
       child: Material(
         color: Colors.transparent,
         child: ListTile(
-          onTap: () => context.go(route),
+          onTap: () {
+            debugPrint('🧭 [NAV] Superadmin navigating to: $route');
+            context.go(route);
+          },
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
           leading: Icon(
             icon,

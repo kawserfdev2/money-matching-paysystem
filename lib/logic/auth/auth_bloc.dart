@@ -1,9 +1,10 @@
+import 'package:flutter/foundation.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:supabase_flutter/supabase_flutter.dart' hide AuthState;
 import '../../domain/repositories/auth_repository.dart';
 import 'auth_event.dart';
 import 'auth_state.dart';
-import '../../data/models/user_model.dart'; // Added for fromMap/toMap
+import '../../data/models/user_model.dart';
 
 class AuthBloc extends HydratedBloc<AuthEvent, AuthState> {
   final AuthRepository _repository;
@@ -19,6 +20,7 @@ class AuthBloc extends HydratedBloc<AuthEvent, AuthState> {
             await _repository.logout();
             emit(Unauthenticated());
           } else {
+            _logUser('[AppStarted] Session restored', profile);
             emit(Authenticated(profile));
           }
         } else {
@@ -42,6 +44,7 @@ class AuthBloc extends HydratedBloc<AuthEvent, AuthState> {
             await _repository.logout();
             emit(AuthError('Your account has been suspended.'));
           } else {
+            _logUser('[LoginRequested] User logged in', userModel);
             emit(Authenticated(userModel));
           }
         } else {
@@ -67,6 +70,7 @@ class AuthBloc extends HydratedBloc<AuthEvent, AuthState> {
           role: event.role,
         );
         if (userModel != null) {
+          _logUser('[RegisterRequested] New user registered', userModel);
           emit(Authenticated(userModel));
         } else {
           emit(AuthError('Could not create user profile.'));
@@ -78,15 +82,57 @@ class AuthBloc extends HydratedBloc<AuthEvent, AuthState> {
     });
 
     on<LogoutRequested>((event, emit) async {
+      debugPrint('[LogoutRequested] User logged out');
       await _repository.logout();
       emit(Unauthenticated());
     });
+
+    on<StartImpersonation>((event, emit) {
+      if (state is Authenticated) {
+        final currentState = state as Authenticated;
+        if (currentState.user.role == 'superadmin') {
+          emit(
+            Authenticated(
+              currentState.user,
+              isImpersonating: true,
+              impersonatedBrandId: event.brandId,
+            ),
+          );
+        }
+      }
+    });
+
+    on<StopImpersonation>((event, emit) {
+      if (state is Authenticated) {
+        final currentState = state as Authenticated;
+        emit(
+          Authenticated(
+            currentState.user,
+            isImpersonating: false,
+            impersonatedBrandId: null,
+          ),
+        );
+      }
+    });
+  }
+
+  void _logUser(String tag, UserModel user) {
+    debugPrint('=== $tag ===');
+    debugPrint('  ID     : ${user.id}');
+    debugPrint('  Email  : ${user.email}');
+    debugPrint('  Role   : ${user.role}');
+    debugPrint('  Status : ${user.status}');
+    debugPrint('====================');
   }
 
   @override
   AuthState? fromJson(Map<String, dynamic> json) {
     if (json['type'] == 'Authenticated') {
-      return Authenticated(UserModel.fromMap(json['user']));
+      return Authenticated(
+        UserModel.fromMap(json['user']),
+        isImpersonating: json['isImpersonating'] ?? false,
+        impersonatedBrandId: json['impersonatedBrandId'],
+      );
     } else if (json['type'] == 'Unauthenticated') {
       return Unauthenticated();
     }
@@ -96,7 +142,12 @@ class AuthBloc extends HydratedBloc<AuthEvent, AuthState> {
   @override
   Map<String, dynamic>? toJson(AuthState state) {
     if (state is Authenticated) {
-      return {'type': 'Authenticated', 'user': state.user.toMap()};
+      return {
+        'type': 'Authenticated',
+        'user': state.user.toMap(),
+        'isImpersonating': state.isImpersonating,
+        'impersonatedBrandId': state.impersonatedBrandId,
+      };
     } else if (state is Unauthenticated) {
       return {'type': 'Unauthenticated'};
     }

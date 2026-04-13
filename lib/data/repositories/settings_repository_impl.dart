@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:amarpay/domain/repositories/settings_repository.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import '../../core/utils/supabase_helper.dart';
 import '../../domain/entities/brand_entity.dart';
 import '../models/brand_model.dart';
 
@@ -9,11 +10,11 @@ class SettingsRepositoryImpl implements SettingsRepository {
 
   @override
   Future<BrandEntity> getBrandInfo() async {
-    final response = await _supabase
-        .from('brands')
-        .select()
-        .limit(1)
-        .maybeSingle();
+    final response = await SupabaseHelper.queryFiltered(
+      'brands',
+      '*',
+      'id',
+    ).limit(1).maybeSingle();
     if (response == null) {
       throw Exception("Brand not set up. Please run initialization script.");
     }

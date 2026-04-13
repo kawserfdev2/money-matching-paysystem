@@ -1,4 +1,5 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
+import '../../core/utils/supabase_helper.dart';
 import '../../domain/entities/payment_entity.dart';
 import '../../domain/repositories/payment_repository.dart';
 import '../models/payment_model.dart';
@@ -15,7 +16,7 @@ class PaymentRepositoryImpl implements PaymentRepository {
     String? gateway,
     PaymentDateRange? dateRange,
   }) async {
-    var query = _supabase.from('payments').select();
+    var query = SupabaseHelper.queryFiltered('payments');
 
     // Filtering
     if (status != null && status != 'All') {
@@ -68,14 +69,14 @@ class PaymentRepositoryImpl implements PaymentRepository {
       userAgent: payment.userAgent,
       gatewayResponse: payment.gatewayResponse,
     );
-    await _supabase.from('payments').insert(model.toJson());
+    await _supabase
+        .from('payments')
+        .insert(SupabaseHelper.injectBrandId(model.toJson()));
   }
 
   @override
   Stream<List<PaymentEntity>> watchPayments() {
-    return _supabase
-        .from('payments')
-        .stream(primaryKey: ['id'])
+    return SupabaseHelper.streamFiltered('payments', ['id'])
         .order('created_at', ascending: false)
         .map(
           (data) => data.map((json) => PaymentModel.fromJson(json)).toList(),

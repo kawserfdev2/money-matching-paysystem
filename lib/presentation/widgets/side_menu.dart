@@ -96,6 +96,13 @@ class SideMenu extends StatelessWidget {
                 ),
                 _buildNavItem(
                   context,
+                  "Global Gateways",
+                  Icons.public_outlined,
+                  '/superadmin/global-settings',
+                  currentLocation == '/superadmin/global-settings',
+                ),
+                _buildNavItem(
+                  context,
                   "Settings",
                   Icons.settings_outlined,
                   '/settings',
@@ -121,11 +128,7 @@ class SideMenu extends StatelessWidget {
       ),
       child: ListTile(
         onTap: () => _showLogoutDialog(context),
-        leading: const Icon(
-          Icons.logout,
-          color: Colors.red,
-          size: 22,
-        ),
+        leading: const Icon(Icons.logout, color: Colors.red, size: 22),
         title: const Text(
           "Logout",
           style: TextStyle(
@@ -177,10 +180,7 @@ class SideMenu extends StatelessWidget {
         }
 
         return Container(
-          padding: const EdgeInsets.symmetric(
-            horizontal: 24,
-            vertical: 32,
-          ),
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
           child: Row(
             children: [
               if (logoUrl != null && !logoUrl.contains("placehold"))

@@ -1,4 +1,5 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
+import '../../core/utils/supabase_helper.dart';
 import 'package:amarpay/domain/entities/activity_entity.dart';
 import 'package:amarpay/domain/repositories/activity_repository.dart';
 import '../models/activity_model.dart';
@@ -8,9 +9,7 @@ class ActivityRepositoryImpl implements ActivityRepository {
 
   @override
   Stream<List<ActivityEntity>> watchActivityLogs() {
-    return _supabase
-        .from('activities')
-        .stream(primaryKey: ['id'])
+    return SupabaseHelper.streamFiltered('activities', ['id'])
         .order('created_at', ascending: false)
         .limit(50)
         .map(
@@ -28,13 +27,17 @@ class ActivityRepositoryImpl implements ActivityRepository {
 
     // Check if table exists to avoid crashes
     try {
-      await _supabase.from('activities').insert({
-        'user_id': user?.id,
-        'action': action,
-        'resource': resource,
-        'metadata': metadata,
-        'ip_address': 'local-agent',
-      });
+      await _supabase
+          .from('activities')
+          .insert(
+            SupabaseHelper.injectBrandId({
+              'user_id': user?.id,
+              'action': action,
+              'resource': resource,
+              'metadata': metadata,
+              'ip_address': 'local-agent',
+            }),
+          );
     } catch (e) {
       print(
         "Warning: Failed to log activity. Ensure activities table exists. Error: $e",

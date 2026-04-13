@@ -1,12 +1,11 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
+import '../../core/utils/supabase_helper.dart';
 import '../../domain/entities/dashboard_stats.dart';
 import '../../domain/entities/payment_entity.dart';
 import '../../domain/repositories/dashboard_repository.dart';
 import '../models/payment_model.dart';
 
 class DashboardRepositoryImpl implements DashboardRepository {
-  final SupabaseClient _supabase = Supabase.instance.client;
-
   @override
   Future<DashboardStats> getDashboardStats() async {
     int totalPayments = 0;
@@ -16,50 +15,47 @@ class DashboardRepositoryImpl implements DashboardRepository {
     List<double> weeklyVolume = List.filled(7, 0.0);
 
     try {
-      final paymentsRes = await _supabase
-          .from('payments')
-          .select('id')
-          .eq('status', 'completed')
-          .count(CountOption.exact);
+      final paymentsRes = await SupabaseHelper.queryFiltered(
+        'payments',
+        'id',
+      ).eq('status', 'completed').count(CountOption.exact);
       totalPayments = paymentsRes.count;
     } catch (_) {}
 
     try {
-      final pendingRes = await _supabase
-          .from('payments')
-          .select('id')
-          .eq('status', 'pending')
-          .count(CountOption.exact);
+      final pendingRes = await SupabaseHelper.queryFiltered(
+        'payments',
+        'id',
+      ).eq('status', 'pending').count(CountOption.exact);
       pendingPayments = pendingRes.count;
     } catch (_) {}
 
     try {
-      final unpaidRes = await _supabase
-          .from('invoices')
-          .select('id')
-          .eq('status', 'unpaid')
-          .count(CountOption.exact);
+      final unpaidRes = await SupabaseHelper.queryFiltered(
+        'invoices',
+        'id',
+      ).eq('status', 'unpaid').count(CountOption.exact);
       unpaidInvoices = unpaidRes.count;
     } catch (_) {}
 
     try {
-      final smsRes = await _supabase
-          .from('sms_logs')
-          .select('id')
-          .eq('status', 'pending')
-          .count(CountOption.exact);
+      final smsRes = await SupabaseHelper.queryFiltered(
+        'sms_logs',
+        'id',
+      ).eq('status', 'pending').count(CountOption.exact);
       pendingSms = smsRes.count;
     } catch (_) {}
 
     try {
-      final List<dynamic> recentData = await _supabase
-          .from('payments')
-          .select('amount, created_at')
-          .eq('status', 'completed')
-          .gte(
-            'created_at',
-            DateTime.now().subtract(const Duration(days: 7)).toIso8601String(),
-          );
+      final List<dynamic> recentData =
+          await SupabaseHelper.queryFiltered('payments', 'amount, created_at')
+              .eq('status', 'completed')
+              .gte(
+                'created_at',
+                DateTime.now()
+                    .subtract(const Duration(days: 7))
+                    .toIso8601String(),
+              );
 
       final now = DateTime.now();
       for (var item in recentData) {
@@ -83,11 +79,9 @@ class DashboardRepositoryImpl implements DashboardRepository {
   @override
   Future<List<PaymentEntity>> getLatestPayments() async {
     try {
-      final response = await _supabase
-          .from('payments')
-          .select()
-          .order('created_at', ascending: false)
-          .limit(10);
+      final response = await SupabaseHelper.queryFiltered(
+        'payments',
+      ).order('created_at', ascending: false).limit(10);
 
       return (response as List)
           .map((json) => PaymentModel.fromJson(json))
@@ -100,9 +94,7 @@ class DashboardRepositoryImpl implements DashboardRepository {
   @override
   Stream<List<PaymentEntity>> watchPayments() {
     try {
-      return _supabase
-          .from('payments')
-          .stream(primaryKey: ['id'])
+      return SupabaseHelper.streamFiltered('payments', ['id'])
           .order('created_at', ascending: false)
           .limit(10)
           .map(

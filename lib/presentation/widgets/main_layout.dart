@@ -8,6 +8,9 @@ import 'side_menu.dart';
 import '../../logic/theme/theme_bloc.dart';
 import '../../logic/theme/theme_event.dart';
 import '../../logic/theme/theme_state.dart';
+import '../../logic/auth/auth_bloc.dart';
+import '../../logic/auth/auth_event.dart';
+import '../../logic/auth/auth_state.dart';
 
 class MainLayout extends StatelessWidget {
   final Widget child;
@@ -18,9 +21,7 @@ class MainLayout extends StatelessWidget {
     return BlocProvider(
       create: (context) => getIt<SettingsBloc>()..add(LoadSettings()),
       child: Scaffold(
-        drawer: const Drawer(
-          child: SideMenu(),
-        ),
+        drawer: const Drawer(child: SideMenu()),
         body: Responsive(
           mobile: _MobileLayout(child: child),
           tablet: _MobileLayout(child: child),
@@ -39,13 +40,11 @@ class _DesktopLayout extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        const SizedBox(
-          width: 260,
-          child: SideMenu(),
-        ),
+        const SizedBox(width: 260, child: SideMenu()),
         Expanded(
           child: Column(
             children: [
+              const _ImpersonationBanner(),
               const _Header(isDesktop: true),
               Expanded(child: child),
             ],
@@ -64,6 +63,7 @@ class _MobileLayout extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
+        const _ImpersonationBanner(),
         const _Header(isDesktop: false),
         Expanded(child: child),
       ],
@@ -183,6 +183,51 @@ class ThemeSwitcher extends StatelessWidget {
             ),
           ],
         );
+      },
+    );
+  }
+}
+
+class _ImpersonationBanner extends StatelessWidget {
+  const _ImpersonationBanner();
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<AuthBloc, AuthState>(
+      builder: (context, state) {
+        if (state is Authenticated && state.isImpersonating) {
+          return Container(
+            width: double.infinity,
+            padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+            color: Colors.orange.shade700,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Expanded(
+                  child: Text(
+                    "⚠️ You are currently impersonating a merchant. Any changes made here will affect their live account.",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+                TextButton.icon(
+                  onPressed: () {
+                    context.read<AuthBloc>().add(StopImpersonation());
+                  },
+                  icon: const Icon(Icons.exit_to_app, color: Colors.white),
+                  label: const Text(
+                    'Exit Impersonation',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  style: TextButton.styleFrom(backgroundColor: Colors.black26),
+                ),
+              ],
+            ),
+          );
+        }
+        return const SizedBox.shrink();
       },
     );
   }
