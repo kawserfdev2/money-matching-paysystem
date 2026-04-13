@@ -27,6 +27,7 @@ import 'package:amarpay/data/repositories/developer_repository_impl.dart';
 import 'package:amarpay/data/repositories/automation_repository_impl.dart';
 import 'package:amarpay/data/repositories/settings_repository_impl.dart';
 import 'package:amarpay/data/repositories/activity_repository_impl.dart';
+import 'package:amarpay/data/repositories/superadmin/superadmin_repository.dart';
 
 // BLOCS
 import 'package:amarpay/logic/auth/auth_bloc.dart';
@@ -43,6 +44,7 @@ import 'package:amarpay/logic/automation/automation_bloc.dart';
 import 'package:amarpay/logic/settings/settings_bloc.dart';
 import 'package:amarpay/logic/activity/activity_bloc.dart';
 import 'package:amarpay/logic/theme/theme_bloc.dart';
+import 'package:amarpay/logic/superadmin/dashboard_bloc.dart';
 
 import 'router/app_router.dart';
 
@@ -78,6 +80,10 @@ void setupInjection() {
     () => ActivityRepositoryImpl(),
   );
 
+  getIt.registerLazySingleton<SuperadminRepository>(
+    () => SuperadminRepository(),
+  );
+
   // Blocs
   getIt.registerLazySingleton(() => AuthBloc(getIt<AuthRepository>()));
   getIt.registerFactory(() => DashboardBloc(getIt<DashboardRepository>()));
@@ -106,6 +112,9 @@ void setupInjection() {
         SettingsBloc(getIt<SettingsRepository>(), getIt<ActivityRepository>()),
   );
   getIt.registerFactory(() => ActivityBloc(getIt<ActivityRepository>()));
+  getIt.registerFactory(
+    () => SuperadminDashboardBloc(getIt<SuperadminRepository>()),
+  );
   getIt.registerLazySingleton(() => ThemeBloc());
 
   // Router

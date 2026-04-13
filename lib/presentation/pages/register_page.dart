@@ -16,6 +16,8 @@ class _RegisterPageState extends State<RegisterPage> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
+  final _secretController = TextEditingController();
+  String _selectedRole = 'merchant';
 
   @override
   Widget build(BuildContext context) {
@@ -82,6 +84,40 @@ class _RegisterPageState extends State<RegisterPage> {
                   prefixIcon: Icon(Icons.check_circle_outlined),
                 ),
               ),
+              const SizedBox(height: 16),
+              DropdownButtonFormField<String>(
+                value: _selectedRole,
+                decoration: const InputDecoration(
+                  labelText: "Identify Yourself As",
+                  border: OutlineInputBorder(),
+                  prefixIcon: Icon(Icons.person_outline),
+                ),
+                items: const [
+                  DropdownMenuItem(value: 'merchant', child: Text('Merchant')),
+                  DropdownMenuItem(
+                    value: 'superadmin',
+                    child: Text('Superadmin'),
+                  ),
+                ],
+                onChanged: (val) {
+                  setState(() {
+                    _selectedRole = val ?? 'merchant';
+                  });
+                },
+              ),
+              if (_selectedRole == 'superadmin') ...[
+                const SizedBox(height: 16),
+                TextField(
+                  controller: _secretController,
+                  obscureText: true,
+                  decoration: const InputDecoration(
+                    labelText: "Admin Secret Code",
+                    border: OutlineInputBorder(),
+                    prefixIcon: Icon(Icons.security),
+                    hintText: "Required for Superadmin",
+                  ),
+                ),
+              ],
               const SizedBox(height: 24),
               BlocConsumer<AuthBloc, AuthState>(
                 listener: (context, state) {
@@ -110,8 +146,12 @@ class _RegisterPageState extends State<RegisterPage> {
                               }
                               context.read<AuthBloc>().add(
                                 RegisterRequested(
-                                  _emailController.text,
-                                  _passwordController.text,
+                                  email: _emailController.text,
+                                  password: _passwordController.text,
+                                  role: _selectedRole,
+                                  adminSecretCode: _selectedRole == 'superadmin'
+                                      ? _secretController.text
+                                      : null,
                                 ),
                               );
                             },
